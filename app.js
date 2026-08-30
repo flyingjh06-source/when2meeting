@@ -231,25 +231,41 @@ function updatePickerSelectionRange(startD, endD) {
 // -------------------------------------------------------------
 // EVENT VIEWS & USER REGISTRATION
 // -------------------------------------------------------------
+function showMainEventView() {
+  document.getElementById('user-input-view').classList.add('hidden');
+  document.getElementById('main-heatmap-view').classList.remove('hidden');
+}
+
+function showUserInputView() {
+  document.getElementById('main-heatmap-view').classList.add('hidden');
+  document.getElementById('user-input-view').classList.remove('hidden');
+}
+
 function showSignInForm() {
   document.getElementById('signin-section').classList.remove('hidden');
-  document.getElementById('availability-input-section').classList.add('hidden');
+  document.getElementById('goto-input-section').classList.add('hidden');
+  showMainEventView();
 }
 
 async function signInUser() {
   document.getElementById('signin-section').classList.add('hidden');
-  document.getElementById('availability-input-section').classList.remove('hidden');
+  document.getElementById('goto-input-section').classList.remove('hidden');
+  
   document.getElementById('active-user-name').textContent = activeUser.name;
+  document.getElementById('active-user-name-main').textContent = activeUser.name;
   
   // Find existing availability
   const userRecord = groupAvailability.find(avail => avail.name.toLowerCase() === activeUser.name.toLowerCase());
   userAvailability.clear();
   
   if (userRecord && Array.isArray(userRecord.available_dates)) {
-    userRecord.available_dates.forEach(date => userAvailability.add(date));
+    userRecord.available_dates.forEach(d => userAvailability.add(d));
   }
   
   renderUserCalendarGrid();
+  
+  // Transition directly to input view after logging in
+  showUserInputView();
 }
 
 function renderUserCalendarGrid() {
@@ -594,6 +610,27 @@ function setupEventListeners() {
       showSignInForm();
     });
   }
+
+
+  const backToMainBtn = document.getElementById('back-to-main-btn');
+  if (backToMainBtn) {
+    backToMainBtn.addEventListener('click', showMainEventView);
+  }
+
+  const gotoInputBtn = document.getElementById('goto-input-btn');
+  if (gotoInputBtn) {
+    gotoInputBtn.addEventListener('click', showUserInputView);
+  }
+
+  const signoutBtnMain = document.getElementById('signout-btn-main');
+  if (signoutBtnMain) {
+    signoutBtnMain.addEventListener('click', () => {
+      sessionStorage.removeItem(`when2meeting_${eventData.id}`);
+      activeUser = { name: '', password: '' };
+      showSignInForm();
+    });
+  }
+
 
   // Selection Helpers in Availability input
   document.getElementById('select-all-btn').addEventListener('click', () => {
