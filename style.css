@@ -649,10 +649,7 @@ input[type="text"]:focus + .input-icon, input[type="password"]:focus + .input-ic
   box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
 }
 
-.helper-buttons {
-  display: flex;
-  gap: 0.5rem;
-}
+
 
 /* Custom Interactive Calendar (displays target dates as blocks) */
 .custom-calendar-container {
@@ -844,6 +841,51 @@ input[type="text"]:focus + .input-icon, input[type="password"]:focus + .input-ic
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1.25rem;
+}
+
+/* Calendar Shape specific */
+.event-month-wrapper {
+  margin-bottom: 2rem;
+}
+
+.event-month-title {
+  font-family: var(--font-header);
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  text-align: center;
+}
+
+.event-weekday-header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 0.25rem;
+}
+
+.date-slot.not-candidate {
+  opacity: 0.2;
+  cursor: default;
+  pointer-events: none;
+  background: transparent;
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+}
+
+/* Heatmap count text */
+.slot-count {
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-top: 0.3rem;
+  color: #fff;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+}
+
+.heatmap-cell-0 .slot-count {
+  color: var(--text-secondary);
+  text-shadow: none;
 }
 
 .tooltip-list-section {
