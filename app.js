@@ -457,7 +457,8 @@ function renderGroupHeatmap() {
 }
 
 function showTooltip(cell, dateStr, availableUsers) {
-  const tooltip = document.getElementById('date-tooltip-card');
+  const placeholder = document.getElementById('tooltip-placeholder');
+  const content = document.getElementById('tooltip-content');
   const dateText = document.getElementById('tooltip-date');
   const ratioText = document.getElementById('tooltip-ratio');
   const yesList = document.getElementById('tooltip-list-yes');
@@ -514,13 +515,17 @@ function showTooltip(cell, dateStr, availableUsers) {
     li.className = 'empty-text';
     noList.appendChild(li);
   }
-
-  tooltip.classList.remove('hidden');
+  
+  // Show content, hide placeholder
+  if (placeholder) placeholder.classList.add('hidden');
+  if (content) content.classList.remove('hidden');
 }
 
 function hideTooltip() {
-  const tooltip = document.getElementById('date-tooltip-card');
-  if (tooltip) tooltip.classList.add('hidden');
+  const placeholder = document.getElementById('tooltip-placeholder');
+  const content = document.getElementById('tooltip-content');
+  if (placeholder) placeholder.classList.remove('hidden');
+  if (content) content.classList.add('hidden');
 }
 
 function renderParticipantList() {
