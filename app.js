@@ -590,17 +590,23 @@ function renderGroupHeatmap() {
     countEl.textContent = `${availableCount}명`;
     cell.appendChild(countEl);
 
-    let cellClassIndex = 0;
     if (totalParticipants > 0 && availableCount > 0) {
-      const percentage = availableCount / totalParticipants;
-      if (percentage > 0.8) cellClassIndex = 5;
-      else if (percentage > 0.6) cellClassIndex = 4;
-      else if (percentage > 0.4) cellClassIndex = 3;
-      else if (percentage > 0.2) cellClassIndex = 2;
-      else cellClassIndex = 1;
+      if (availableCount === totalParticipants) {
+        cell.classList.add('heatmap-cell-max');
+      } else {
+        let cellClassIndex = 0;
+        const percentage = availableCount / totalParticipants;
+        if (percentage > 0.8) cellClassIndex = 5;
+        else if (percentage > 0.6) cellClassIndex = 4;
+        else if (percentage > 0.4) cellClassIndex = 3;
+        else if (percentage > 0.2) cellClassIndex = 2;
+        else cellClassIndex = 1;
+        cell.classList.add(`heatmap-cell-${cellClassIndex}`);
+      }
+    } else {
+      cell.classList.add(`heatmap-cell-0`);
     }
     
-    cell.classList.add(`heatmap-cell-${cellClassIndex}`);
     cell.dataset.availableCount = availableCount;
     cell.dataset.dateString = dateStr;
 
@@ -627,7 +633,7 @@ function showTooltip(cell, dateStr, availableUsers) {
   const percentage = totalParticipants > 0 ? Math.round((countYes / totalParticipants) * 100) : 0;
 
   // Format Date title in tooltip
-  if (dateStr.includes('T') || dateStr.includes('오전') || dateStr.includes('오후') || dateStr.includes('요일')) {
+  if (eventData.mode === 'datetime') {
     dateText.textContent = dateStr;
   } else {
     const daysKo = ['일', '월', '화', '수', '목', '금', '토'];
@@ -1163,6 +1169,49 @@ function formatTimeLabel(timeStr) {
   return timeStr;
 }
 
+function renderMiniCalendar(containerId, activeDates) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  container.innerHTML = '';
+  
+  if (eventData.date_mode === 'days') {
+    const daysMap = { sun: '일요일', mon: '월요일', tue: '화요일', wed: '수요일', thu: '목요일', fri: '금요일', sat: '토요일' };
+    activeDates.forEach(d => {
+      const el = document.createElement('div');
+      el.className = 'mini-cal-day active';
+      el.textContent = daysMap[d] || d;
+      el.dataset.date = d;
+      container.appendChild(el);
+    });
+    return;
+  }
+  
+  const datesByMonth = {};
+  activeDates.forEach(dStr => {
+    const d = new Date(dStr);
+    const monthKey = `${d.getFullYear()}년 ${d.getMonth() + 1}월`;
+    if (!datesByMonth[monthKey]) datesByMonth[monthKey] = [];
+    datesByMonth[monthKey].push(dStr);
+  });
+  
+  for (const month in datesByMonth) {
+    const mLabel = document.createElement('div');
+    mLabel.className = 'mini-cal-month';
+    mLabel.textContent = month;
+    container.appendChild(mLabel);
+    
+    datesByMonth[month].forEach(dStr => {
+      const d = new Date(dStr);
+      const el = document.createElement('div');
+      el.className = 'mini-cal-day active';
+      const daysKo = ['일','월','화','수','목','금','토'];
+      el.textContent = `${d.getDate()}일 (${daysKo[d.getDay()]})`;
+      el.dataset.date = dStr;
+      container.appendChild(el);
+    });
+  }
+}
+
 function renderDatetimeGroupGrid() {
   const container = document.getElementById('datetime-group-grid');
   container.innerHTML = '';
@@ -1174,6 +1223,8 @@ function renderDatetimeGroupGrid() {
   const grid = document.createElement('div');
   grid.className = 'time-grid';
   grid.style.gridTemplateColumns = `60px repeat(${dates.length}, minmax(40px, 1fr))`;
+
+  renderMiniCalendar('mini-calendar-group', dates);
 
   const emptyCorner = document.createElement('div');
   grid.appendChild(emptyCorner);
@@ -1214,14 +1265,20 @@ function renderDatetimeGroupGrid() {
 
       let heat = 0;
       if (totalParticipants > 0 && availableCount > 0) {
-        const percentage = availableCount / totalParticipants;
-        if (percentage > 0.8) heat = 5;
-        else if (percentage > 0.6) heat = 4;
-        else if (percentage > 0.4) heat = 3;
-        else if (percentage > 0.2) heat = 2;
-        else heat = 1;
+        if (availableCount === totalParticipants) {
+          cell.classList.add('heat-max');
+        } else {
+          const percentage = availableCount / totalParticipants;
+          if (percentage > 0.8) heat = 5;
+          else if (percentage > 0.6) heat = 4;
+          else if (percentage > 0.4) heat = 3;
+          else if (percentage > 0.2) heat = 2;
+          else heat = 1;
+          cell.classList.add(`heat-${heat}`);
+        }
+      } else {
+        cell.classList.add(`heat-0`);
       }
-      cell.classList.add(`heat-${heat}`);
 
       let displayDate = d;
       if (eventData.date_mode === 'days') {
@@ -1233,8 +1290,18 @@ function renderDatetimeGroupGrid() {
       }
       const displayKey = `${displayDate} ${formatTimeLabel(time)}`;
 
-      cell.addEventListener('mouseenter', () => showTooltip(cell, displayKey, availableUsers));
-      cell.addEventListener('mouseleave', () => hideTooltip());
+      cell.addEventListener('mouseenter', () => {
+        showTooltip(cell, displayKey, availableUsers);
+        // Highlight mini calendar
+        document.querySelectorAll('#mini-calendar-group .mini-cal-day').forEach(el => {
+          if (el.dataset.date === d) el.classList.add('highlight');
+          else el.classList.remove('highlight');
+        });
+      });
+      cell.addEventListener('mouseleave', () => {
+        hideTooltip();
+        document.querySelectorAll('#mini-calendar-group .mini-cal-day').forEach(el => el.classList.remove('highlight'));
+      });
 
       grid.appendChild(cell);
     });
@@ -1253,6 +1320,8 @@ function renderDatetimeUserGrid() {
   const grid = document.createElement('div');
   grid.className = 'time-grid';
   grid.style.gridTemplateColumns = `60px repeat(${dates.length}, minmax(40px, 1fr))`;
+
+  renderMiniCalendar('mini-calendar-user', dates);
 
   const emptyCorner = document.createElement('div');
   grid.appendChild(emptyCorner);
@@ -1303,6 +1372,14 @@ function renderDatetimeUserGrid() {
         if (isDragging) {
           toggleDatetimeSlot(cell, slotKey, dragSelectMode);
         }
+        document.querySelectorAll('#mini-calendar-user .mini-cal-day').forEach(el => {
+          if (el.dataset.date === d) el.classList.add('highlight');
+          else el.classList.remove('highlight');
+        });
+      });
+      
+      cell.addEventListener('mouseleave', () => {
+        document.querySelectorAll('#mini-calendar-user .mini-cal-day').forEach(el => el.classList.remove('highlight'));
       });
 
       grid.appendChild(cell);
