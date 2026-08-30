@@ -45,22 +45,68 @@
       <!-- 1. CREATION VIEW (이벤트 생성 페이지) -->
       <section id="creation-view" class="view-card hidden creation-split">
         <div class="creation-left">
-          <div class="logo-zone" style="margin-bottom: 2rem;">
+          <div class="logo-zone" style="margin-bottom: 1.5rem;">
             <div class="logo">
               <i data-lucide="calendar-days" class="logo-icon"></i>
               <span class="logo-text">when2<span class="highlight">meeting</span></span>
             </div>
           </div>
-          <div class="card-header" style="text-align: left; margin-bottom: 2rem;">
+          <div class="card-header" style="text-align: left; margin-bottom: 1.5rem;">
             <h2 style="font-size: 2rem; margin-bottom: 0.5rem;">새로운 모임 만들기</h2>
             <p>모임 이름과 후보 날짜들을 선택해 주세요.</p>
           </div>
   
-          <div class="form-group" style="margin-bottom: 2rem;">
+          <div class="form-group" style="margin-bottom: 1.25rem;">
             <label for="event-title">모임 이름</label>
             <div class="input-wrapper">
               <i data-lucide="tag" class="input-icon"></i>
               <input type="text" id="event-title" placeholder="예: 여름 동기 엠티, 팀 프로젝트 회의" autocomplete="off" required>
+            </div>
+          </div>
+
+          <!-- Mode Toggle: 날짜&시간 / 날짜만 -->
+          <div class="form-group" style="margin-bottom: 1.25rem;">
+            <label>모임 유형</label>
+            <div class="mode-toggle" id="mode-toggle">
+              <button type="button" class="mode-toggle-btn active" data-mode="datetime" id="mode-datetime-btn">
+                <i data-lucide="clock" style="width:1rem;height:1rem;"></i> 날짜 & 시간
+              </button>
+              <button type="button" class="mode-toggle-btn" data-mode="dateonly" id="mode-dateonly-btn">
+                <i data-lucide="calendar" style="width:1rem;height:1rem;"></i> 날짜만
+              </button>
+            </div>
+          </div>
+
+          <!-- Time Range (datetime mode only) -->
+          <div class="form-group" id="time-range-group" style="margin-bottom: 1.25rem;">
+            <label>가능한 시간 범위</label>
+            <div class="time-range-row">
+              <select id="time-start-select" class="time-select"></select>
+              <span class="time-range-separator">~</span>
+              <select id="time-end-select" class="time-select"></select>
+            </div>
+          </div>
+
+          <!-- Date Mode: 특정 날짜 / 요일 -->
+          <div class="form-group" style="margin-bottom: 1.25rem;">
+            <label>날짜 선택 방식</label>
+            <div class="mode-toggle" id="date-mode-toggle">
+              <button type="button" class="mode-toggle-btn active" data-datemode="specific" id="datemode-specific-btn">특정 날짜</button>
+              <button type="button" class="mode-toggle-btn" data-datemode="days" id="datemode-days-btn">요일</button>
+            </div>
+          </div>
+
+          <!-- Day of Week Picker (shown when datemode=days) -->
+          <div class="form-group hidden" id="day-of-week-group" style="margin-bottom: 1.25rem;">
+            <label>요일 선택</label>
+            <div class="day-of-week-picker" id="day-of-week-picker">
+              <button type="button" class="dow-btn" data-day="sun">일</button>
+              <button type="button" class="dow-btn" data-day="mon">월</button>
+              <button type="button" class="dow-btn" data-day="tue">화</button>
+              <button type="button" class="dow-btn" data-day="wed">수</button>
+              <button type="button" class="dow-btn" data-day="thu">목</button>
+              <button type="button" class="dow-btn" data-day="fri">금</button>
+              <button type="button" class="dow-btn" data-day="sat">토</button>
             </div>
           </div>
 
@@ -73,7 +119,7 @@
           </div>
         </div>
 
-        <div class="creation-right">
+        <div class="creation-right" id="creation-right-calendar">
           <div class="form-group" style="margin-bottom: 0; display: flex; flex-direction: column; height: 100%;">
             <label style="margin-bottom: 1rem;">후보 날짜 선택 <span class="label-desc">(드래그하거나 클릭하여 여러 날짜를 선택할 수 있습니다)</span></label>
             <div class="calendar-picker-container" style="flex: 1; max-width: none; margin: 0;">
@@ -225,8 +271,8 @@
                   <div class="custom-calendar-container">
                     <div id="group-heatmap-grid" class="heatmap-grid"></div>
                   </div>
-
                 </div>
+                <div id="datetime-group-grid" class="time-grid-container hidden"></div>
               </div>
             </div>
           </div>
@@ -242,6 +288,7 @@
                 <div class="custom-calendar-container">
                   <div id="availability-calendar-grid"></div>
                 </div>
+                <div id="datetime-user-grid" class="time-grid-container hidden"></div>
                 <div class="save-status-container">
                   <div id="save-status" class="save-status">
                     <i data-lucide="check-circle" class="status-icon"></i>
