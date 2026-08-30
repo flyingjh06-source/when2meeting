@@ -300,9 +300,14 @@ function populateTimeSelectors() {
       const value = `${hh}:${mm}`;
       const label = `${hh}:${mm}`;
       times.push({ value, label });
+      startSel.add(new Option(label, value));
+      endSel.add(new Option(label, value));
     }
   }
-  times.push({ value: '24:00', label: '자정 (다음날)' });
+  const maxTime = { value: '24:00', label: '자정 (다음날)' };
+  times.push(maxTime);
+  startSel.add(new Option(maxTime.label, maxTime.value));
+  endSel.add(new Option(maxTime.label, maxTime.value));
 
   createCustomSelect('time-start-select', times, '09:00');
   createCustomSelect('time-end-select', times, '22:00');
