@@ -273,15 +273,20 @@ function showSignInForm() {
   // Show only the login form
   const loginContainer = document.getElementById('login-form-container');
   if (loginContainer) loginContainer.classList.remove('hidden');
-  // Hide all other main sections
+  // Hide other left-panel sections
   const loggedMenu = document.getElementById('logged-in-menu-container');
   if (loggedMenu) loggedMenu.classList.add('hidden');
-  const groupView = document.getElementById('group-results-view');
-  if (groupView) groupView.classList.add('hidden');
-  const userInput = document.getElementById('user-input-view');
-  if (userInput) userInput.classList.add('hidden');
   const backBtn = document.getElementById('back-to-main-container');
   if (backBtn) backBtn.classList.add('hidden');
+  // Keep group results (heatmap calendar) visible on the right
+  const groupView = document.getElementById('group-results-view');
+  if (groupView) groupView.classList.remove('hidden');
+  // Hide user input view
+  const userInput = document.getElementById('user-input-view');
+  if (userInput) userInput.classList.add('hidden');
+  // Show participant sidebar
+  const sidebar = document.getElementById('participant-sidebar');
+  if (sidebar) sidebar.classList.remove('hidden');
 }
 
 
