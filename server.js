@@ -68,6 +68,11 @@ async function initDb() {
       dates TEXT NOT NULL
     )
   `);
+
+  try { await dbRun("ALTER TABLE events ADD COLUMN mode TEXT DEFAULT 'dateonly'"); } catch (e) {}
+  try { await dbRun("ALTER TABLE events ADD COLUMN time_start TEXT"); } catch (e) {}
+  try { await dbRun("ALTER TABLE events ADD COLUMN time_end TEXT"); } catch (e) {}
+  try { await dbRun("ALTER TABLE events ADD COLUMN date_mode TEXT DEFAULT 'specific'"); } catch (e) {}
   await dbRun(`
     CREATE TABLE IF NOT EXISTS availabilities (
       event_id TEXT NOT NULL,
@@ -98,18 +103,25 @@ function getLocalIpAddress() {
 
 // 1. Create a new event
 app.post('/api/events', async (req, res) => {
-  const { title, dates } = req.body;
+  const { title, dates, mode = 'dateonly', time_start = null, time_end = null, date_mode = 'specific' } = req.body;
   if (!title || !dates || !Array.isArray(dates) || dates.length === 0) {
     return res.status(400).json({ error: 'Title and non-empty dates array are required.' });
+  }
+  if (mode === 'datetime' && (!time_start || !time_end)) {
+    return res.status(400).json({ error: 'time_start and time_end are required for datetime mode.' });
   }
   try {
     const candidateId = generateShortId();
     const existing = await dbGet('SELECT id FROM events WHERE id = ?', [candidateId]);
     const finalId = existing ? generateShortId() + generateShortId().slice(0, 2) : candidateId;
-    await dbRun('INSERT INTO events (id, title, dates) VALUES (?, ?, ?)', [
+    await dbRun('INSERT INTO events (id, title, dates, mode, time_start, time_end, date_mode) VALUES (?, ?, ?, ?, ?, ?, ?)', [
       finalId,
       title,
       JSON.stringify(dates),
+      mode,
+      time_start,
+      time_end,
+      date_mode,
     ]);
     res.status(201).json({ id: finalId });
   } catch (err) {
@@ -123,7 +135,7 @@ app.get('/api/events/:id', async (req, res) => {
   try {
     const event = await dbGet('SELECT * FROM events WHERE id = ?', [req.params.id]);
     if (!event) return res.status(404).json({ error: 'Event not found.' });
-    res.json({ id: event.id, title: event.title, dates: JSON.parse(event.dates) });
+    res.json({ id: event.id, title: event.title, dates: JSON.parse(event.dates), mode: event.mode || 'dateonly', time_start: event.time_start, time_end: event.time_end, date_mode: event.date_mode || 'specific' });
   } catch (err) {
     res.status(500).json({ error: 'Failed to retrieve event.' });
   }
