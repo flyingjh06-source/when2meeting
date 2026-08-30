@@ -1492,6 +1492,7 @@ input[type="text"]:focus + .input-icon, input[type="password"]:focus + .input-ic
     flex: 0 0 340px;
     padding-right: 2rem;
     border-right: 1px solid var(--border-color);
+    overflow-y: auto;
   }
   .creation-right {
     flex: 1;
