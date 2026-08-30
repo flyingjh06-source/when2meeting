@@ -417,7 +417,7 @@ input[type="text"]:focus + .input-icon, input[type="password"]:focus + .input-ic
 .calendar-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 4px;
+  gap: 0px;
   user-select: none;
 }
 
@@ -873,9 +873,10 @@ input[type="text"]:focus + .input-icon, input[type="password"]:focus + .input-ic
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  border-radius: var(--radius-md);
+  border-radius: 0;
   background-color: rgba(255, 255, 255, 0.02);
-  border: 1.5px solid var(--border-color);
+  outline: 1px solid var(--border-color);
+  outline-offset: -1px;
   cursor: pointer;
   padding: 0.5rem;
   transition: all var(--transition-fast);
@@ -1260,7 +1261,7 @@ input[type="text"]:focus + .input-icon, input[type="password"]:focus + .input-ic
   }
 
   .date-slot {
-    border-radius: 6px;
+    border-radius: 0;
     aspect-ratio: auto;
     height: 100%;
   }
@@ -1655,7 +1656,7 @@ input[type="text"]:focus + .input-icon, input[type="password"]:focus + .input-ic
 
 .time-grid {
   display: grid;
-  gap: 2px;
+  gap: 0px;
   user-select: none;
   min-width: max-content;
 }
@@ -1699,8 +1700,9 @@ input[type="text"]:focus + .input-icon, input[type="password"]:focus + .input-ic
 .time-slot {
   height: 24px;
   background-color: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 2px;
+  outline: 1px solid rgba(255, 255, 255, 0.05);
+  outline-offset: -1px;
+  border-radius: 0;
   cursor: pointer;
   transition: all 0.1s;
 }
