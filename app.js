@@ -83,7 +83,7 @@ async function loadEventData(eventId) {
     await availPromise;
 
     // 3. Render Event Page details
-    document.getElementById('event-title').textContent = eventData.title;
+    document.getElementById('display-event-title').textContent = eventData.title;
     const titleText = eventData.mode === 'datetime' ? '내 가능한 시간 등록' : '내 가능한 날짜 등록';
     const userTitle = document.getElementById('user-panel-title');
     if (userTitle) userTitle.textContent = titleText;
