@@ -94,11 +94,11 @@ async function loadEventData(eventId) {
     // Render availability grids (heatmap is ready)
     if (eventData.mode === 'datetime') {
       document.querySelector('.heatmap-container').classList.add('hidden');
-      document.getElementById('datetime-group-grid').classList.remove('hidden');
+      document.getElementById('datetime-layout-container').classList.remove('hidden');
       renderDatetimeGroupGrid();
     } else {
       document.querySelector('.heatmap-container').classList.remove('hidden');
-      document.getElementById('datetime-group-grid').classList.add('hidden');
+      document.getElementById('datetime-layout-container').classList.add('hidden');
       renderGroupHeatmap();
     }
     renderParticipantList();
@@ -435,12 +435,12 @@ async function signInUser() {
   if (backBtn) backBtn.classList.add('hidden');
 
   if (eventData.mode === 'datetime') {
-    document.querySelector('#availability-input-section .custom-calendar-container').classList.add('hidden');
-    document.getElementById('datetime-user-grid').classList.remove('hidden');
+    document.querySelector('#user-input-grid-wrapper').classList.add('hidden');
+    document.getElementById('datetime-user-layout-container').classList.remove('hidden');
     renderDatetimeUserGrid();
   } else {
-    document.querySelector('#availability-input-section .custom-calendar-container').classList.remove('hidden');
-    document.getElementById('datetime-user-grid').classList.add('hidden');
+    document.querySelector('#user-input-grid-wrapper').classList.remove('hidden');
+    document.getElementById('datetime-user-layout-container').classList.add('hidden');
     renderUserCalendarGrid();
   }
 }
