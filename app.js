@@ -203,12 +203,18 @@ function renderPickerCalendar() {
 
 function updatePickerSelectionRange(startD, endD) {
   selectedDates = new Set(selectedDatesSnapshot);
-  const minDate = startD < endD ? startD : endD;
-  const maxDate = startD > endD ? startD : endD;
   
-  let curr = new Date(minDate);
+  const t1 = startD.getTime();
+  const t2 = endD.getTime();
+  const minT = Math.min(t1, t2);
+  const maxT = Math.max(t1, t2);
+  
+  let curr = new Date(minT);
   const today = new Date();
   today.setHours(0, 0, 0, 0);
+  
+  const maxDate = new Date(maxT);
+  maxDate.setHours(0,0,0,0);
   
   while (curr <= maxDate) {
     if (curr >= today) {
@@ -216,7 +222,8 @@ function updatePickerSelectionRange(startD, endD) {
       if (dragSelectMode) selectedDates.add(dStr);
       else selectedDates.delete(dStr);
     }
-    curr.setDate(curr.getDate() + 1);
+    // Add 1 day safely
+    curr = new Date(curr.getFullYear(), curr.getMonth(), curr.getDate() + 1);
   }
   
   document.querySelectorAll('#calendar-picker-grid .calendar-day:not(.empty)').forEach(cell => {
@@ -300,28 +307,36 @@ function renderUserCalendarGrid() {
 function updateUserSelectionRange(startD, endD) {
   userAvailability = new Set(userAvailabilitySnapshot);
   
-  const minDate = startD < endD ? startD : endD;
-  const maxDate = startD > endD ? startD : endD;
+  const t1 = startD.getTime();
+  const t2 = endD.getTime();
   
-  let curr = new Date(minDate);
+  const minT = Math.min(t1, t2);
+  const maxT = Math.max(t1, t2);
+  
+  let curr = new Date(minT);
   curr.setHours(0,0,0,0);
-  const mMax = new Date(maxDate);
+  const mMax = new Date(maxT);
   mMax.setHours(0,0,0,0);
   
   while (curr <= mMax) {
     const dStr = formatDate(curr);
-    if (eventData.dates.includes(dStr)) {
+    if (eventData && eventData.dates && eventData.dates.includes(dStr)) {
       if (dragSelectMode) userAvailability.add(dStr);
       else userAvailability.delete(dStr);
     }
-    curr.setDate(curr.getDate() + 1);
+    // Add 1 day safely
+    curr = new Date(curr.getFullYear(), curr.getMonth(), curr.getDate() + 1);
   }
   
-  document.querySelectorAll('#availability-calendar-grid .date-slot:not(.not-candidate)').forEach(cell => {
+  const cells = document.querySelectorAll('#availability-calendar-grid .date-slot:not(.not-candidate)');
+  cells.forEach(cell => {
     const ds = cell.dataset.dateString;
     if (ds) {
-      if (userAvailability.has(ds)) cell.classList.add('active');
-      else cell.classList.remove('active');
+      if (userAvailability.has(ds)) {
+        cell.classList.add('active');
+      } else {
+        cell.classList.remove('active');
+      }
     }
   });
 }
