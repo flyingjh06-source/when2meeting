@@ -57,9 +57,9 @@
           <div class="calendar-picker-container">
             <!-- Calendar Navigation -->
             <div class="calendar-nav">
-              <button id="prev-month-btn" class="nav-btn"><i data-lucide="chevron-left"></i></button>
-              <h3 id="calendar-month-year">2026년 6월</h3>
-              <button id="next-month-btn" class="nav-btn"><i data-lucide="chevron-right"></i></button>
+              <button id="prev-month-btn" class="nav-btn"><span style="font-weight:bold; font-size:1.2rem;">&lt;</span></button>
+              <h3 id="calendar-month-year">2026년 8월</h3>
+              <button id="next-month-btn" class="nav-btn"><span style="font-weight:bold; font-size:1.2rem;">&gt;</span></button>
             </div>
             <!-- Calendar Grid -->
             <div class="calendar-grid-wrapper">
@@ -218,20 +218,10 @@
 
               <div class="calendar-instructions">
                 <i data-lucide="info" class="info-icon"></i>
-                <span>모드를 선택하고 드래그하여 날짜를 입력하세요.</span>
+                <span>드래그하여 가능한 날짜를 칠하거나 지우세요.</span>
               </div>
 
-              <!-- Paint Mode Toggle -->
-              <div class="paint-mode-container">
-                <div class="paint-mode-toggle">
-                  <button id="mode-available-btn" class="mode-btn active">
-                    <i data-lucide="check" class="btn-icon"></i> 가능
-                  </button>
-                  <button id="mode-unavailable-btn" class="mode-btn">
-                    <i data-lucide="x" class="btn-icon"></i> 불가능
-                  </button>
-                </div>
-              </div>
+
 
               <div class="custom-calendar-container">
                 <div id="availability-calendar-grid">
