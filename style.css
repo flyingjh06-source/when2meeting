@@ -522,12 +522,12 @@ input[type="text"]:focus + .input-icon, input[type="password"]:focus + .input-ic
   color: white;
 }
 
-/* Panels (Left and Right) */
-.event-panels {
-  display: grid;
-  grid-template-columns: 1fr 1.3fr;
+/* Panels (Full Width) */
+.view-section {
+  display: flex;
+  flex-direction: column;
   gap: 1.5rem;
-  align-items: start;
+  animation: slideUp 0.4s ease-out;
 }
 
 .glass-panel {
@@ -1015,10 +1015,7 @@ input[type="text"]:focus + .input-icon, input[type="password"]:focus + .input-ic
 
 /* Media Queries for Responsiveness */
 @media (max-width: 1024px) {
-  .event-panels {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-  }
+
 }
 
 @media (max-width: 640px) {
