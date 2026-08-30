@@ -20,6 +20,11 @@ let pickerCurrentDate = new Date();
 // Drag Select State
 let isDragging = false;
 let dragSelectMode = true; // true = selecting, false = deselecting
+let dragStartDate = null;
+let selectedDatesSnapshot = null;
+
+let userDragStartIndex = -1;
+let userAvailabilitySnapshot = null;
 
 // Document Elements
 const creationView = document.getElementById('creation-view');
@@ -179,12 +184,14 @@ function renderPickerCalendar() {
         e.preventDefault();
         isDragging = true;
         dragSelectMode = !selectedDates.has(dateStr);
-        toggleDateSelection(dayCell, dateStr, dragSelectMode);
+        dragStartDate = cellDate;
+        selectedDatesSnapshot = new Set(selectedDates);
+        updatePickerSelectionRange(cellDate, cellDate);
       });
 
       dayCell.addEventListener('mouseenter', () => {
         if (isDragging) {
-          toggleDateSelection(dayCell, dateStr, dragSelectMode);
+          updatePickerSelectionRange(dragStartDate, cellDate);
         }
       });
     }
@@ -193,14 +200,31 @@ function renderPickerCalendar() {
   }
 }
 
-function toggleDateSelection(cell, dateStr, select) {
-  if (select) {
-    selectedDates.add(dateStr);
-    cell.classList.add('selected');
-  } else {
-    selectedDates.delete(dateStr);
-    cell.classList.remove('selected');
+function updatePickerSelectionRange(startD, endD) {
+  selectedDates = new Set(selectedDatesSnapshot);
+  const minDate = startD < endD ? startD : endD;
+  const maxDate = startD > endD ? startD : endD;
+  
+  let curr = new Date(minDate);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  
+  while (curr <= maxDate) {
+    if (curr >= today) {
+      const dStr = formatDate(curr);
+      if (dragSelectMode) selectedDates.add(dStr);
+      else selectedDates.delete(dStr);
+    }
+    curr.setDate(curr.getDate() + 1);
   }
+  
+  document.querySelectorAll('#calendar-picker-grid .calendar-day:not(.empty)').forEach(cell => {
+    const ds = cell.dataset.date;
+    if (ds) {
+      if (selectedDates.has(ds)) cell.classList.add('selected');
+      else cell.classList.remove('selected');
+    }
+  });
 }
 
 // -------------------------------------------------------------
@@ -234,7 +258,7 @@ function renderUserCalendarGrid() {
   // Sort proposed dates chronologically
   const sortedDates = [...eventData.dates].sort();
 
-  sortedDates.forEach(dateStr => {
+  sortedDates.forEach((dateStr, index) => {
     const dateObj = new Date(dateStr);
     const dayCell = createDateSlotElement(dateObj, dateStr);
 
@@ -247,12 +271,14 @@ function renderUserCalendarGrid() {
       e.preventDefault();
       isDragging = true;
       dragSelectMode = !userAvailability.has(dateStr);
-      toggleUserAvailability(dayCell, dateStr, dragSelectMode);
+      userDragStartIndex = index;
+      userAvailabilitySnapshot = new Set(userAvailability);
+      updateUserSelectionRange(index, index, sortedDates);
     });
 
     dayCell.addEventListener('mouseenter', () => {
       if (isDragging) {
-        toggleUserAvailability(dayCell, dateStr, dragSelectMode);
+        updateUserSelectionRange(userDragStartIndex, index, sortedDates);
       }
     });
 
@@ -260,14 +286,25 @@ function renderUserCalendarGrid() {
   });
 }
 
-function toggleUserAvailability(cell, dateStr, select) {
-  if (select) {
-    userAvailability.add(dateStr);
-    cell.classList.add('active');
-  } else {
-    userAvailability.delete(dateStr);
-    cell.classList.remove('active');
+function updateUserSelectionRange(startIdx, endIdx, sortedDates) {
+  userAvailability = new Set(userAvailabilitySnapshot);
+  
+  const minIdx = Math.min(startIdx, endIdx);
+  const maxIdx = Math.max(startIdx, endIdx);
+  
+  for (let i = minIdx; i <= maxIdx; i++) {
+    const dStr = sortedDates[i];
+    if (dragSelectMode) userAvailability.add(dStr);
+    else userAvailability.delete(dStr);
   }
+  
+  document.querySelectorAll('#availability-calendar-grid .date-slot').forEach(cell => {
+    const ds = cell.dataset.dateString;
+    if (ds) {
+      if (userAvailability.has(ds)) cell.classList.add('active');
+      else cell.classList.remove('active');
+    }
+  });
 }
 
 async function saveUserAvailability() {
@@ -650,6 +687,7 @@ function createDateSlotElement(dateObj, dateStr) {
 
   const slot = document.createElement('div');
   slot.className = 'date-slot';
+  slot.dataset.dateString = dateStr;
   
   const monthEl = document.createElement('div');
   monthEl.className = 'slot-month';
