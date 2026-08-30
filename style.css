@@ -552,7 +552,8 @@ input[type="text"]:focus + .input-icon, input[type="password"]:focus + .input-ic
 .dow-btn {
   flex: 1;
   aspect-ratio: 1;
-  max-height: 120px;
+  max-width: 80px;
+  max-height: 80px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1494,7 +1495,7 @@ input[type="text"]:focus + .input-icon, input[type="password"]:focus + .input-ic
     max-width: 1200px;
     align-items: stretch;
     padding: 1.5rem 2rem !important;
-    min-height: 480px;
+    height: 520px;
   }
   .creation-left {
     flex: 0 0 340px;
