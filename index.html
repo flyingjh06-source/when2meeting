@@ -82,21 +82,88 @@
       </section>
 
       <!-- 2. EVENT VIEW (일정 취합 및 결과 페이지) -->
-      <section id="event-view" class="event-layout hidden">
-        <!-- Main View (Heatmap + Sign In / Go to Input) -->
-        <div id="main-heatmap-view" class="view-section split-layout">
+      <section id="event-view" class="event-layout split-layout hidden">
+        
+        <!-- LEFT PANEL: Info, Login, Participants -->
+        <div class="left-panel">
           
-          <!-- LEFT PANEL: Info, Share Link, Login, Participants -->
-          <div class="left-panel">
-            <!-- Event Header Banner -->
+          <!-- Yellow Zone: Static Logo (No Link) -->
+          <div class="logo-zone" style="margin-bottom: 1rem; padding-left: 0.5rem;">
+            <div class="logo">
+              <i data-lucide="calendar-days" class="logo-icon"></i>
+              <span class="logo-text">when2<span class="highlight">meeting</span></span>
+            </div>
+          </div>
+
+          <!-- Green Zone: Dynamic Controls -->
+          <div id="left-dynamic-zone" style="display: flex; flex-direction: column; gap: 1.5rem;">
+            
+            <!-- STATE A: Login Form (Main View, Not Logged In) -->
+            <div id="login-form-container" class="panel-card glass-panel">
+              <div class="panel-header">
+                <h3>내 일정 등록하기</h3>
+                <p class="panel-desc">이름을 입력하고 로그인하여 나의 가능한 일정을 등록하세요.</p>
+              </div>
+              <div class="form-group">
+                <label for="user-name">이름 (실명)</label>
+                <div class="input-wrapper">
+                  <i data-lucide="user" class="input-icon"></i>
+                  <input type="text" id="user-name" placeholder="이름을 입력하세요" autocomplete="off">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="user-password">비밀번호 <span class="label-desc">(수정용/선택)</span></label>
+                <div class="input-wrapper">
+                  <i data-lucide="lock" class="input-icon"></i>
+                  <input type="password" id="user-password" placeholder="비밀번호">
+                </div>
+              </div>
+              <button id="signin-btn" class="btn btn-primary btn-block">일정 입력 시작하기</button>
+            </div>
+
+            <!-- STATE B: Logged-in Menu (Main View, Logged In) -->
+            <div id="logged-in-menu-container" class="panel-card glass-panel hidden">
+              <div class="panel-header" style="margin-bottom: 0;">
+                <p style="margin-bottom: 1.5rem; color: var(--text-secondary); text-align: center;">
+                  <span class="user-accent" id="active-user-name-main" style="font-weight:700; color:var(--color-primary);"></span> 님으로 로그인 됨
+                </p>
+                <div style="display:flex; flex-direction:column; gap:10px;">
+                    <button id="goto-input-btn" class="btn btn-primary btn-block" style="padding: 1rem; font-size: 1.05rem;">내 가능한 시간 입력</button>
+                    <button id="signout-btn-main" class="btn btn-secondary btn-block">로그아웃</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- STATE C: Back to Main (Input View) -->
+            <div id="back-to-main-container" class="panel-card glass-panel hidden">
+              <div class="panel-header" style="margin-bottom: 0;">
+                <button id="back-to-main-btn" class="btn btn-primary btn-block" style="padding: 1rem; font-size: 1.05rem;">
+                  <i data-lucide="arrow-left" class="btn-icon"></i> 메인 화면으로
+                </button>
+              </div>
+            </div>
+
+            <!-- Participant Sidebar (Visible only in Main View) -->
+            <div id="participant-sidebar" class="participant-sidebar">
+              <h4 class="sidebar-title">
+                <i data-lucide="users" class="title-icon"></i>
+                <span>참여자 (<span id="participant-count">0</span>명)</span>
+              </h4>
+              <ul id="participant-list" class="participant-list">
+                <!-- JS will list participants -->
+              </ul>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- RIGHT PANEL: Calendars (Red Zone) -->
+        <div class="right-panel">
+          
+          <!-- VIEW A: Main Group Heatmap View -->
+          <div id="group-results-view" class="dynamic-right-view">
             <div class="event-banner">
               <div class="event-info">
-                <a href="/" class="logo-link-small">
-                  <div class="logo">
-                    <i data-lucide="calendar-days" class="logo-icon"></i>
-                    <span class="logo-text">when2<span class="highlight">meeting</span></span>
-                  </div>
-                </a>
                 <h1 id="display-event-title">모임 로딩 중...</h1>
                 <div class="share-url-container">
                   <span class="url-label">공유 링크:</span>
@@ -109,143 +176,58 @@
               </div>
             </div>
 
-            <!-- User Login Panel -->
-            <div class="panel-card glass-panel" id="user-login-panel">
+            <div class="panel-card glass-panel" id="group-results-panel" style="flex:1;">
               <div class="panel-header">
-                <h3>내 일정 등록하기</h3>
-                <p class="panel-desc">이름을 입력하고 로그인하여 나의 가능한 일정을 등록하세요.</p>
+                <h3>그룹 조율 결과</h3>
+                <p class="panel-desc">초록색이 짙을수록 더 많은 사람이 가능합니다.</p>
               </div>
-
-              <!-- Sign In Form -->
-              <div id="signin-section" class="signin-container">
-                <div class="form-group">
-                  <label for="user-name">이름 (실명)</label>
-                  <div class="input-wrapper">
-                    <i data-lucide="user" class="input-icon"></i>
-                    <input type="text" id="user-name" placeholder="이름을 입력하세요" autocomplete="off">
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label for="user-password">비밀번호 <span class="label-desc">(본인 입력 수정용)</span></label>
-                  <div class="input-wrapper">
-                    <i data-lucide="lock" class="input-icon"></i>
-                    <input type="password" id="user-password" placeholder="비밀번호(선택)">
-                  </div>
-                </div>
-                <button id="signin-btn" class="btn btn-primary btn-block">일정 입력 시작하기</button>
-              </div>
-              
-              <!-- Already Logged In / Go to Input Button -->
-              <div id="goto-input-section" class="hidden" style="text-align: center; padding: 1.5rem 0;">
-                <p style="margin-bottom: 1rem; color: var(--text-secondary);">
-                  현재 <span class="user-accent" id="active-user-name-main" style="font-weight:700; color:var(--color-primary);"></span> 님으로 로그인되어 있습니다.
-                </p>
-                <div style="display:flex; justify-content:center; gap:10px; flex-wrap:wrap;">
-                    <button id="signout-btn-main" class="btn btn-secondary">다른 이름으로 로그인</button>
-                    <button id="goto-input-btn" class="btn btn-primary" style="padding: 0.75rem; font-size: 1rem;">내 가능한 날짜 등록하러 가기</button>
-                </div>
-              </div>
-            </div>
-
-            <!-- Participant Sidebar (Moved to Left Panel) -->
-            <div class="participant-sidebar">
-              <h4 class="sidebar-title">
-                <i data-lucide="users" class="title-icon"></i>
-                <span>참여자 (<span id="participant-count">0</span>명)</span>
-              </h4>
-              <div class="participant-instructions">이름 위에 마우스를 올리면 해당 참여자의 일정만 강조됩니다.</div>
-              <ul id="participant-list" class="participant-list">
-                <!-- JS will list participants -->
-              </ul>
-            </div>
-          </div>
-
-          <!-- RIGHT PANEL: Group Heatmap -->
-          <div class="right-panel">
-            <!-- Heatmap Panel -->
-            <div class="panel-card glass-panel" id="group-results-panel">
-              <div class="panel-header">
-                <h3>그룹 조율 결과 (일정 취합 현황판)</h3>
-                <p class="panel-desc">초록색이 짙을수록 더 많은 사람이 가능합니다. 날짜에 마우스를 대보세요!</p>
-              </div>
-
               <div class="group-content-wrapper">
-                <!-- Heat Map Grid -->
                 <div class="heatmap-container">
-                <div class="custom-calendar-container">
-                  <div id="group-heatmap-grid" class="heatmap-grid">
-                    <!-- JS will populate heatmap cells -->
+                  <div class="custom-calendar-container">
+                    <div id="group-heatmap-grid" class="heatmap-grid"></div>
                   </div>
-                </div>
-                
-                <!-- Interactive Tooltip Card inside Heatmap -->
-                <div id="date-tooltip-card" class="tooltip-card hidden">
-                  <h4 id="tooltip-date">2026년 6월 22일</h4>
-                  <div id="tooltip-ratio" class="tooltip-badge">0명 중 0명 가능 (0%)</div>
-                  <div class="tooltip-lists">
-                    <div class="tooltip-list-section">
-                      <div class="list-title green-text"><i data-lucide="check" class="list-icon"></i> 가능 (<span id="tooltip-count-yes">0</span>)</div>
-                      <ul id="tooltip-list-yes" class="tooltip-list">
-                        <!-- Yes names -->
-                      </ul>
-                    </div>
-                    <div class="tooltip-list-section">
-                      <div class="list-title red-text"><i data-lucide="x" class="list-icon"></i> 불가능 (<span id="tooltip-count-no">0</span>)</div>
-                      <ul id="tooltip-list-no" class="tooltip-list">
-                        <!-- No names -->
-                      </ul>
+                  
+                  <!-- Interactive Tooltip Card -->
+                  <div id="date-tooltip-card" class="tooltip-card hidden">
+                    <h4 id="tooltip-date">2026년 6월 22일</h4>
+                    <div id="tooltip-ratio" class="tooltip-badge">0명 중 0명 가능 (0%)</div>
+                    <div class="tooltip-lists">
+                      <div class="tooltip-list-section">
+                        <div class="list-title green-text"><i data-lucide="check" class="list-icon"></i> 가능 (<span id="tooltip-count-yes">0</span>)</div>
+                        <ul id="tooltip-list-yes" class="tooltip-list"></ul>
+                      </div>
+                      <div class="tooltip-list-section">
+                        <div class="list-title red-text"><i data-lucide="x" class="list-icon"></i> 불가능 (<span id="tooltip-count-no">0</span>)</div>
+                        <ul id="tooltip-list-no" class="tooltip-list"></ul>
+                      </div>
                     </div>
                   </div>
-                </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- User Input View (Hidden by default) -->
-        <div id="user-input-view" class="view-section hidden">
-          <div class="panel-card glass-panel" id="user-availability-panel">
-            
-            <div class="panel-header" style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
-              <div>
+          <!-- VIEW B: User Input Calendar View -->
+          <div id="user-input-view" class="dynamic-right-view hidden">
+            <div class="panel-card glass-panel" id="user-availability-panel" style="flex:1;">
+              <div class="panel-header">
                 <h3 id="user-panel-title">내 가능한 날짜 등록</h3>
-                <p class="panel-desc">가능한 날짜를 마우스 드래그로 칠해보세요.</p>
+                <p class="panel-desc">드래그하여 가능한 날짜를 칠하거나 지우세요.</p>
               </div>
-              <button id="back-to-main-btn" class="btn btn-secondary">
-                <i data-lucide="arrow-left" class="btn-icon"></i> 메인 화면으로 돌아가기
-              </button>
-            </div>
-
-            <!-- Availability Input Calendar -->
-            <div id="availability-input-section" class="availability-section">
-              <div class="user-welcome" style="margin-bottom: 1rem; display: flex; align-items: center; justify-content: space-between;">
-                <div class="welcome-text">
-                  <span class="user-accent" id="active-user-name"></span> 님의 일정 표표
+              <div id="availability-input-section" class="availability-section">
+                <div class="custom-calendar-container">
+                  <div id="availability-calendar-grid"></div>
                 </div>
-              </div>
-
-              <div class="calendar-instructions">
-                <i data-lucide="info" class="info-icon"></i>
-                <span>드래그하여 가능한 날짜를 칠하거나 지우세요.</span>
-              </div>
-
-
-
-              <div class="custom-calendar-container">
-                <div id="availability-calendar-grid">
-                  <!-- JS will dynamically populate selected event dates -->
-                </div>
-              </div>
-
-              <div class="save-status-container">
-                <div id="save-status" class="save-status">
-                  <i data-lucide="check-circle" class="status-icon"></i>
-                  <span id="save-status-text">모든 변경 사항이 저장되었습니다.</span>
+                <div class="save-status-container">
+                  <div id="save-status" class="save-status">
+                    <i data-lucide="check-circle" class="status-icon"></i>
+                    <span id="save-status-text">저장 완료</span>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
+
         </div>
       </section>
     </main>
