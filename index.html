@@ -183,17 +183,23 @@
                   <p class="panel-desc">초록색이 짙을수록 더 많은 사람이 가능합니다.</p>
                 </div>
                   <!-- Interactive Tooltip Card -->
-                  <div id="date-tooltip-card" class="tooltip-card hidden" style="margin-top: 0; min-width: 250px; padding: 1rem; width: 100%; max-width: 350px;">
-                    <h4 id="tooltip-date">2026년 6월 22일</h4>
-                    <div id="tooltip-ratio" class="tooltip-badge">0명 중 0명 가능 (0%)</div>
-                    <div class="tooltip-lists" style="display: flex; gap: 1rem;">
-                      <div class="tooltip-list-section" style="flex: 1;">
-                        <div class="list-title green-text"><i data-lucide="check" class="list-icon"></i> 가능 (<span id="tooltip-count-yes">0</span>)</div>
-                        <ul id="tooltip-list-yes" class="tooltip-list"></ul>
-                      </div>
-                      <div class="tooltip-list-section" style="flex: 1;">
-                        <div class="list-title red-text"><i data-lucide="x" class="list-icon"></i> 불가능 (<span id="tooltip-count-no">0</span>)</div>
-                        <ul id="tooltip-list-no" class="tooltip-list"></ul>
+                  <div id="date-tooltip-card" class="tooltip-card" style="margin-top: 0; min-width: 250px; padding: 1rem; width: 100%; max-width: 350px; min-height: 140px; display: flex; flex-direction: column; justify-content: center;">
+                    <div id="tooltip-placeholder" style="color: var(--text-muted); text-align: center; font-size: 0.9rem;">
+                      <i data-lucide="mouse-pointer-click" style="width: 1.5rem; height: 1.5rem; margin-bottom: 0.5rem; opacity: 0.5;"></i><br>
+                      달력의 날짜를 클릭하여<br>상세 참석자 정보를 확인하세요.
+                    </div>
+                    <div id="tooltip-content" class="hidden">
+                      <h4 id="tooltip-date" style="margin-top:0">2026년 6월 22일</h4>
+                      <div id="tooltip-ratio" class="tooltip-badge">0명 중 0명 가능 (0%)</div>
+                      <div class="tooltip-lists" style="display: flex; gap: 1rem;">
+                        <div class="tooltip-list-section" style="flex: 1;">
+                          <div class="list-title green-text"><i data-lucide="check" class="list-icon"></i> 가능 (<span id="tooltip-count-yes">0</span>)</div>
+                          <ul id="tooltip-list-yes" class="tooltip-list"></ul>
+                        </div>
+                        <div class="tooltip-list-section" style="flex: 1;">
+                          <div class="list-title red-text"><i data-lucide="x" class="list-icon"></i> 불가능 (<span id="tooltip-count-no">0</span>)</div>
+                          <ul id="tooltip-list-no" class="tooltip-list"></ul>
+                        </div>
                       </div>
                     </div>
                   </div>
