@@ -8,6 +8,15 @@
   --bg-surface: rgba(22, 30, 49, 0.6);
   --bg-surface-solid: #161e31;
   --bg-input: rgba(13, 18, 30, 0.8);
+
+/* Utilities */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
   
   --border-color: rgba(255, 255, 255, 0.08);
   --border-glow: rgba(16, 185, 129, 0.2);
