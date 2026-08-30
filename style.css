@@ -692,6 +692,7 @@ input[type="text"]:focus + .input-icon, input[type="password"]:focus + .input-ic
 .custom-calendar-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
+  grid-auto-rows: 1fr;
   gap: 10px;
   user-select: none;
 }
@@ -1080,6 +1081,8 @@ input[type="text"]:focus + .input-icon, input[type="password"]:focus + .input-ic
   .custom-calendar-grid {
     gap: 4px;
     height: 100%;
+    flex: 1;
+    min-height: 0;
   }
 
   .date-slot {
@@ -1244,6 +1247,7 @@ input[type="text"]:focus + .input-icon, input[type="password"]:focus + .input-ic
     height: 100%;
     display: flex;
     flex-direction: column;
+    min-height: 0;
   }
 
   .logo-link-small {
