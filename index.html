@@ -99,75 +99,11 @@
           </div>
         </div>
 
-        <div class="event-panels">
-          <!-- Left Panel: User Sign In & Drag Selection -->
-          <div class="panel-card glass-panel" id="user-availability-panel">
-            <div class="panel-header">
-              <h3 id="user-panel-title">내 가능한 날짜 등록</h3>
-              <p class="panel-desc">로그인하여 가능한 날짜를 마우스 드래그로 칠해보세요.</p>
-            </div>
-
-            <!-- Sign In Form -->
-            <div id="signin-section" class="signin-container">
-              <div class="form-group">
-                <label for="user-name">이름 (실명)</label>
-                <div class="input-wrapper">
-                  <i data-lucide="user" class="input-icon"></i>
-                  <input type="text" id="user-name" placeholder="이름을 입력하세요" autocomplete="off">
-                </div>
-              </div>
-              <div class="form-group">
-                <label for="user-password">비밀번호 <span class="label-desc">(본인 입력 수정용)</span></label>
-                <div class="input-wrapper">
-                  <i data-lucide="lock" class="input-icon"></i>
-                  <input type="password" id="user-password" placeholder="비밀번호(선택)">
-                </div>
-              </div>
-              <button id="signin-btn" class="btn btn-primary btn-block">일정 입력 시작하기</button>
-            </div>
-
-            <!-- Availability Input Calendar -->
-            <div id="availability-input-section" class="availability-section hidden">
-              <div class="user-welcome">
-                <div class="welcome-text">
-                  <span class="user-accent" id="active-user-name">길동</span> 님으로 수정 중
-                </div>
-                <button id="signout-btn" class="btn btn-mini-secondary">다른 이름으로 등록</button>
-              </div>
-
-              <div class="calendar-instructions">
-                <i data-lucide="info" class="info-icon"></i>
-                <span>모드를 선택하고 드래그하여 날짜를 입력하세요.</span>
-              </div>
-
-              <!-- Paint Mode Toggle -->
-              <div class="paint-mode-container">
-                <div class="paint-mode-toggle">
-                  <button id="mode-available-btn" class="mode-btn active">
-                    <i data-lucide="check" class="btn-icon"></i> 가능
-                  </button>
-                  <button id="mode-unavailable-btn" class="mode-btn">
-                    <i data-lucide="x" class="btn-icon"></i> 불가능
-                  </button>
-                </div>
-              </div>
-
-              <div class="custom-calendar-container">
-                <div id="availability-calendar-grid" class="custom-calendar-grid">
-                  <!-- JS will dynamically populate selected event dates -->
-                </div>
-              </div>
-
-              <div class="save-status-container">
-                <div id="save-status" class="save-status">
-                  <i data-lucide="check-circle" class="status-icon"></i>
-                  <span id="save-status-text">모든 변경 사항이 저장되었습니다.</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Right Panel: Group Heatmap & Participant Sidebar -->
+        
+        <!-- Main View (Heatmap + Sign In / Go to Input) -->
+        <div id="main-heatmap-view" class="view-section">
+          
+          <!-- Heatmap Panel -->
           <div class="panel-card glass-panel" id="group-results-panel">
             <div class="panel-header">
               <h3>그룹 조율 결과 (일정 취합 현황판)</h3>
@@ -214,6 +150,100 @@
                 <ul id="participant-list" class="participant-list">
                   <!-- JS will list participants -->
                 </ul>
+              </div>
+            </div>
+          </div>
+          
+          <!-- User Login Panel (Below Heatmap) -->
+          <div class="panel-card glass-panel" id="user-login-panel">
+            <div class="panel-header">
+              <h3>내 일정 등록하기</h3>
+              <p class="panel-desc">이름을 입력하고 로그인하여 나의 가능한 일정을 등록하세요.</p>
+            </div>
+
+            <!-- Sign In Form -->
+            <div id="signin-section" class="signin-container">
+              <div class="form-group">
+                <label for="user-name">이름 (실명)</label>
+                <div class="input-wrapper">
+                  <i data-lucide="user" class="input-icon"></i>
+                  <input type="text" id="user-name" placeholder="이름을 입력하세요" autocomplete="off">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="user-password">비밀번호 <span class="label-desc">(본인 입력 수정용)</span></label>
+                <div class="input-wrapper">
+                  <i data-lucide="lock" class="input-icon"></i>
+                  <input type="password" id="user-password" placeholder="비밀번호(선택)">
+                </div>
+              </div>
+              <button id="signin-btn" class="btn btn-primary btn-block">일정 입력 시작하기</button>
+            </div>
+            
+            <!-- Already Logged In / Go to Input Button -->
+            <div id="goto-input-section" class="hidden" style="text-align: center; padding: 1.5rem 0;">
+              <p style="margin-bottom: 1rem; color: var(--text-secondary);">
+                현재 <span class="user-accent" id="active-user-name-main" style="font-weight:700; color:var(--color-primary);"></span> 님으로 로그인되어 있습니다.
+              </p>
+              <div style="display:flex; justify-content:center; gap:10px;">
+                  <button id="signout-btn-main" class="btn btn-secondary">다른 이름으로 로그인</button>
+                  <button id="goto-input-btn" class="btn btn-primary" style="padding: 0.75rem 2rem; font-size: 1.1rem;">내 가능한 날짜 등록하러 가기</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- User Input View (Hidden by default) -->
+        <div id="user-input-view" class="view-section hidden">
+          <div class="panel-card glass-panel" id="user-availability-panel">
+            
+            <div class="panel-header" style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
+              <div>
+                <h3 id="user-panel-title">내 가능한 날짜 등록</h3>
+                <p class="panel-desc">가능한 날짜를 마우스 드래그로 칠해보세요.</p>
+              </div>
+              <button id="back-to-main-btn" class="btn btn-secondary">
+                <i data-lucide="arrow-left" class="btn-icon"></i> 메인 화면으로 돌아가기
+              </button>
+            </div>
+
+            <!-- Availability Input Calendar -->
+            <div id="availability-input-section" class="availability-section">
+              <div class="user-welcome" style="margin-bottom: 1rem; display: flex; align-items: center; justify-content: space-between;">
+                <div class="welcome-text">
+                  <span class="user-accent" id="active-user-name"></span> 님의 일정 표표
+                </div>
+              </div>
+
+              <div class="calendar-instructions">
+                <i data-lucide="info" class="info-icon"></i>
+                <span>모드를 선택하고 드래그하여 날짜를 입력하세요.</span>
+              </div>
+
+              <!-- Paint Mode Toggle -->
+              <div class="paint-mode-container">
+                <div class="paint-mode-toggle">
+                  <button id="mode-available-btn" class="mode-btn active">
+                    <i data-lucide="check" class="btn-icon"></i> 가능
+                  </button>
+                  <button id="mode-unavailable-btn" class="mode-btn">
+                    <i data-lucide="x" class="btn-icon"></i> 불가능
+                  </button>
+                </div>
+              </div>
+
+              <div class="custom-calendar-container">
+                <div id="availability-calendar-grid" class="custom-calendar-grid">
+                  <!-- JS will dynamically populate selected event dates -->
+                </div>
+              </div>
+
+              <div class="save-status-container">
+                <div id="save-status" class="save-status">
+                  <i data-lucide="check-circle" class="status-icon"></i>
+                  <span id="save-status-text">모든 변경 사항이 저장되었습니다.</span>
+                </div>
               </div>
             </div>
           </div>
