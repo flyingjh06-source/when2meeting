@@ -110,7 +110,12 @@ body {
   flex-direction: column;
   max-width: 1280px;
   margin: 0 auto;
-  padding: 0 1.5rem;
+  padding: 0 0.75rem;
+}
+@media (min-width: 900px) {
+  .app-container {
+    padding: 0 1.5rem;
+  }
 }
 
 /* Header */
@@ -178,12 +183,17 @@ body {
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
-  padding: 2.5rem;
+  padding: 1.25rem;
   box-shadow: var(--shadow-md);
   max-width: 760px;
   width: 100%;
   margin: 0 auto;
   transition: border-color var(--transition-normal);
+}
+@media (min-width: 900px) {
+  .view-card {
+    padding: 2.5rem;
+  }
 }
 
 .view-card:hover {
@@ -1321,7 +1331,7 @@ input[type="text"]:focus + .input-icon, input[type="password"]:focus + .input-ic
   margin: 0 auto;
 }
 #creation-view.view-card {
-  padding: 1.25rem 1.5rem !important;
+  padding: 1rem !important;
   margin: auto !important;
   display: flex;
   flex-direction: column;
