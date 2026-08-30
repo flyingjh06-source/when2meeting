@@ -796,16 +796,22 @@ async function createEvent() {
 
 // Copy URL to Clipboard
 function copyShareUrl() {
-  const input = document.getElementById('share-url-input');
-  input.select();
-  input.setSelectionRange(0, 99999); // For mobile devices
-
-  navigator.clipboard.writeText(input.value)
+  navigator.clipboard.writeText(window.location.href)
     .then(() => {
       showToast();
     })
     .catch(err => {
       console.error('Failed to copy text: ', err);
+      // Fallback
+      const input = document.getElementById('share-url-input');
+      if (input) {
+        input.value = window.location.href;
+        input.classList.remove('hidden');
+        input.select();
+        document.execCommand('copy');
+        input.classList.add('hidden');
+        showToast();
+      }
     });
 }
 
