@@ -108,7 +108,6 @@ body {
 .app-container {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
   max-width: 1280px;
   margin: 0 auto;
   padding: 0 1.5rem;
@@ -1322,12 +1321,17 @@ input[type="text"]:focus + .input-icon, input[type="password"]:focus + .input-ic
   margin: 0 auto;
 }
 #creation-view.view-card {
-  padding: 1.25rem 2rem !important;
+  padding: 1.25rem 1.5rem !important;
   margin: auto !important;
-  max-height: calc(100vh - 5rem);
-  overflow: hidden;
   display: flex;
   flex-direction: column;
+}
+@media (min-width: 900px) {
+  #creation-view.view-card {
+    max-height: calc(100vh - 5rem);
+    overflow: hidden;
+    padding: 1.25rem 2rem !important;
+  }
 }
 #creation-view .card-header { margin-bottom: 0.75rem !important; }
 #creation-view .form-group { margin-bottom: 0.75rem !important; }
