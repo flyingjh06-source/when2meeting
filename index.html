@@ -177,31 +177,33 @@
             </div>
 
             <div class="panel-card glass-panel" id="group-results-panel" style="flex:1;">
-              <div class="panel-header">
-                <h3>그룹 조율 결과</h3>
-                <p class="panel-desc">초록색이 짙을수록 더 많은 사람이 가능합니다.</p>
+              <div class="panel-header" style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem;">
+                <div>
+                  <h3>그룹 조율 결과</h3>
+                  <p class="panel-desc">초록색이 짙을수록 더 많은 사람이 가능합니다.</p>
+                </div>
+                  <!-- Interactive Tooltip Card -->
+                  <div id="date-tooltip-card" class="tooltip-card hidden" style="margin-top: 0; min-width: 250px; padding: 1rem; width: 100%; max-width: 350px;">
+                    <h4 id="tooltip-date">2026년 6월 22일</h4>
+                    <div id="tooltip-ratio" class="tooltip-badge">0명 중 0명 가능 (0%)</div>
+                    <div class="tooltip-lists" style="display: flex; gap: 1rem;">
+                      <div class="tooltip-list-section" style="flex: 1;">
+                        <div class="list-title green-text"><i data-lucide="check" class="list-icon"></i> 가능 (<span id="tooltip-count-yes">0</span>)</div>
+                        <ul id="tooltip-list-yes" class="tooltip-list"></ul>
+                      </div>
+                      <div class="tooltip-list-section" style="flex: 1;">
+                        <div class="list-title red-text"><i data-lucide="x" class="list-icon"></i> 불가능 (<span id="tooltip-count-no">0</span>)</div>
+                        <ul id="tooltip-list-no" class="tooltip-list"></ul>
+                      </div>
+                    </div>
+                  </div>
               </div>
               <div class="group-content-wrapper">
                 <div class="heatmap-container">
                   <div class="custom-calendar-container">
                     <div id="group-heatmap-grid" class="heatmap-grid"></div>
                   </div>
-                  
-                  <!-- Interactive Tooltip Card -->
-                  <div id="date-tooltip-card" class="tooltip-card hidden">
-                    <h4 id="tooltip-date">2026년 6월 22일</h4>
-                    <div id="tooltip-ratio" class="tooltip-badge">0명 중 0명 가능 (0%)</div>
-                    <div class="tooltip-lists">
-                      <div class="tooltip-list-section">
-                        <div class="list-title green-text"><i data-lucide="check" class="list-icon"></i> 가능 (<span id="tooltip-count-yes">0</span>)</div>
-                        <ul id="tooltip-list-yes" class="tooltip-list"></ul>
-                      </div>
-                      <div class="tooltip-list-section">
-                        <div class="list-title red-text"><i data-lucide="x" class="list-icon"></i> 불가능 (<span id="tooltip-count-no">0</span>)</div>
-                        <ul id="tooltip-list-no" class="tooltip-list"></ul>
-                      </div>
-                    </div>
-                  </div>
+
                 </div>
               </div>
             </div>
