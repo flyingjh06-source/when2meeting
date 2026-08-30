@@ -268,13 +268,28 @@ function showUserInputView() {
 }
 
 function showSignInForm() {
+  // Reset active user
   activeUser = { name: '', password: '' };
-  showMainEventView();
+  // Show only the login form
+  const loginContainer = document.getElementById('login-form-container');
+  if (loginContainer) loginContainer.classList.remove('hidden');
+  // Hide all other main sections
+  const loggedMenu = document.getElementById('logged-in-menu-container');
+  if (loggedMenu) loggedMenu.classList.add('hidden');
+  const groupView = document.getElementById('group-results-view');
+  if (groupView) groupView.classList.add('hidden');
+  const userInput = document.getElementById('user-input-view');
+  if (userInput) userInput.classList.add('hidden');
+  const backBtn = document.getElementById('back-to-main-container');
+  if (backBtn) backBtn.classList.add('hidden');
 }
 
+
 async function signInUser() {
-  document.getElementById('active-user-name').textContent = activeUser.name;
-  document.getElementById('active-user-name-main').textContent = activeUser.name;
+  const activeNameEl = document.getElementById('active-user-name');
+  const activeNameMainEl = document.getElementById('active-user-name-main');
+  if (activeNameEl) activeNameEl.textContent = activeUser.name;
+  if (activeNameMainEl) activeNameMainEl.textContent = activeUser.name;
   
   // Find existing availability
   const userRecord = groupAvailability.find(avail => avail.name.toLowerCase() === activeUser.name.toLowerCase());
@@ -283,11 +298,25 @@ async function signInUser() {
   if (userRecord && Array.isArray(userRecord.available_dates)) {
     userRecord.available_dates.forEach(d => userAvailability.add(d));
   }
-  
+
+  // === CRITICAL: Transition the UI after sign-in ===
+  // Hide login form
+  const loginContainer = document.getElementById('login-form-container');
+  if (loginContainer) loginContainer.classList.add('hidden');
+  // Show logged-in menu
+  const loggedMenu = document.getElementById('logged-in-menu-container');
+  if (loggedMenu) loggedMenu.classList.remove('hidden');
+  // Make sure group results view is visible
+  const groupView = document.getElementById('group-results-view');
+  if (groupView) groupView.classList.remove('hidden');
+  // Make sure participant sidebar is visible
+  const sidebar = document.getElementById('participant-sidebar');
+  if (sidebar) sidebar.classList.remove('hidden');
+  // Hide back button (we are in main view)
+  const backBtn = document.getElementById('back-to-main-container');
+  if (backBtn) backBtn.classList.add('hidden');
+
   renderUserCalendarGrid();
-  
-  // Transition directly to input view after logging in
-  showUserInputView();
 }
 
 function renderUserCalendarGrid() {
@@ -674,18 +703,16 @@ function setupEventListeners() {
     copyBtn.addEventListener('click', copyShareUrl);
   }
 
-  // Event View: Sign In Button
+  // Event View: Sign In Button — bind directly (DOM is ready)
   const signinBtn = document.getElementById('signin-btn');
   if (signinBtn) {
     signinBtn.addEventListener('click', () => {
       const name = document.getElementById('user-name').value.trim();
       const pass = document.getElementById('user-password').value;
-      
       if (!name) {
-        alert('이름을 입력해 주세요.');
+        alert('이름을 입력해 주세요');
         return;
       }
-      
       activeUser.name = name;
       activeUser.password = pass;
       signInUser();
@@ -708,6 +735,7 @@ function setupEventListeners() {
     backToMainBtn.addEventListener('click', showMainEventView);
   }
 
+  // "내 가능한 시간 입력" button — bind directly (DOM is ready)
   const gotoInputBtn = document.getElementById('goto-input-btn');
   if (gotoInputBtn) {
     gotoInputBtn.addEventListener('click', showUserInputView);
@@ -723,18 +751,24 @@ function setupEventListeners() {
   }
 
 
-  // Selection Helpers in Availability input
-  document.getElementById('select-all-btn').addEventListener('click', () => {
-    eventData.dates.forEach(d => userAvailability.add(d));
-    renderUserCalendarGrid();
-    saveUserAvailability();
-  });
+  // Selection Helpers in Availability input (guard against missing elements)
+  const selectAllBtn = document.getElementById('select-all-btn');
+  if (selectAllBtn) {
+    selectAllBtn.addEventListener('click', () => {
+      eventData.dates.forEach(d => userAvailability.add(d));
+      renderUserCalendarGrid();
+      saveUserAvailability();
+    });
+  }
 
-  document.getElementById('deselect-all-btn').addEventListener('click', () => {
-    userAvailability.clear();
-    renderUserCalendarGrid();
-    saveUserAvailability();
-  });
+  const deselectAllBtn = document.getElementById('deselect-all-btn');
+  if (deselectAllBtn) {
+    deselectAllBtn.addEventListener('click', () => {
+      userAvailability.clear();
+      renderUserCalendarGrid();
+      saveUserAvailability();
+    });
+  }
   
   // Paint Mode Toggles
   const btnAvail = document.getElementById('mode-available-btn');
