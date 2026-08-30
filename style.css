@@ -255,13 +255,13 @@ body {
 
 input[type="text"], input[type="password"] {
   width: 100%;
-  padding: 0.95rem 1rem 0.95rem 2.75rem;
+  padding: 0.75rem 1rem 0.75rem 2.5rem;
   background-color: var(--bg-input);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   color: var(--text-primary);
   font-family: var(--font-body);
-  font-size: 1rem;
+  font-size: 0.95rem;
   transition: all var(--transition-fast);
 }
 
@@ -282,12 +282,12 @@ input[type="text"]:focus + .input-icon, input[type="password"]:focus + .input-ic
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  padding: 0.9rem 1.75rem;
+  padding: 0.7rem 1.5rem;
   white-space: nowrap;
   word-break: keep-all;
   border-radius: var(--radius-md);
   font-family: var(--font-body);
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
   transition: all var(--transition-fast);
@@ -481,19 +481,19 @@ input[type="text"]:focus + .input-icon, input[type="password"]:focus + .input-ic
 
 .mode-toggle-btn {
   flex: 1;
-  padding: 0.6rem 1rem;
+  padding: 0.5rem 0.75rem;
   border: none;
   background: transparent;
   color: var(--text-secondary);
   font-family: var(--font-body);
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   font-weight: 500;
   cursor: pointer;
   transition: all var(--transition-fast);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.4rem;
+  gap: 0.25rem;
 }
 
 .mode-toggle-btn:hover {
@@ -516,13 +516,13 @@ input[type="text"]:focus + .input-icon, input[type="password"]:focus + .input-ic
 
 .time-select {
   flex: 1;
-  padding: 0.6rem 0.75rem;
+  padding: 0.5rem 0.5rem;
   border-radius: var(--radius-sm);
   border: 1px solid var(--border-color);
   background: var(--bg-surface);
   color: var(--text-primary);
   font-family: var(--font-body);
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   cursor: pointer;
   appearance: auto;
 }
@@ -1455,10 +1455,10 @@ input[type="text"]:focus + .input-icon, input[type="password"]:focus + .input-ic
     padding: 1.25rem 2rem !important;
   }
 }
-#creation-view .card-header { margin-bottom: 0.5rem !important; }
+#creation-view .card-header { margin-bottom: 0.25rem !important; }
 #creation-view .form-group { margin-bottom: 0.5rem !important; }
 #creation-view .calendar-nav { margin-bottom: 0.25rem !important; }
-#creation-view .selection-actions { margin-top: 0.5rem !important; }
+#creation-view .selection-actions { margin-top: 0.25rem !important; }
 
 .app-footer {
   padding: 0.5rem 0;
@@ -1494,11 +1494,11 @@ input[type="text"]:focus + .input-icon, input[type="password"]:focus + .input-ic
     flex-direction: row;
     max-width: 1200px;
     align-items: stretch;
-    padding: 1.5rem 2rem !important;
-    height: 580px;
+    padding: 1rem 1.5rem !important;
+    height: 500px;
   }
   .creation-left {
-    flex: 0 0 340px;
+    flex: 0 0 320px;
     padding-right: 1.5rem;
     border-right: 1px solid var(--border-color);
   }
