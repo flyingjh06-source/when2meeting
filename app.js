@@ -7,6 +7,7 @@ let eventData = null;         // For the active event
 let groupAvailability = [];   // All participants' availabilities
 let selectedDates = new Set(); // For creation calendar ("YYYY-MM-DD")
 let userAvailability = new Set(); // For active user availability ("YYYY-MM-DD")
+let currentPaintMode = 'available'; // 'available' or 'unavailable'
 
 // Active User
 let activeUser = {
@@ -270,7 +271,7 @@ function renderUserCalendarGrid() {
     dayCell.addEventListener('mousedown', (e) => {
       e.preventDefault();
       isDragging = true;
-      dragSelectMode = !userAvailability.has(dateStr);
+      dragSelectMode = (currentPaintMode === 'available');
       userDragStartIndex = index;
       userAvailabilitySnapshot = new Set(userAvailability);
       updateUserSelectionRange(index, index, sortedDates);
@@ -611,6 +612,24 @@ function setupEventListeners() {
     renderUserCalendarGrid();
     saveUserAvailability();
   });
+  
+  // Paint Mode Toggles
+  const btnAvail = document.getElementById('mode-available-btn');
+  const btnUnavail = document.getElementById('mode-unavailable-btn');
+  
+  if (btnAvail && btnUnavail) {
+    btnAvail.addEventListener('click', () => {
+      currentPaintMode = 'available';
+      btnAvail.classList.add('active');
+      btnUnavail.classList.remove('active');
+    });
+    
+    btnUnavail.addEventListener('click', () => {
+      currentPaintMode = 'unavailable';
+      btnUnavail.classList.add('active');
+      btnAvail.classList.remove('active');
+    });
+  }
 }
 
 // Create Event
