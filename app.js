@@ -209,6 +209,79 @@ function initModeToggles() {
   });
 }
 
+function createCustomSelect(selectId, options, defaultValue) {
+  const select = document.getElementById(selectId);
+  select.style.display = 'none';
+
+  const existingWrapper = select.nextElementSibling;
+  if (existingWrapper && existingWrapper.classList.contains('custom-select-wrapper')) {
+    existingWrapper.remove();
+  }
+
+  const wrapper = document.createElement('div');
+  wrapper.className = 'custom-select-wrapper';
+  
+  const trigger = document.createElement('div');
+  trigger.className = 'custom-select-trigger time-select';
+  
+  const valueSpan = document.createElement('span');
+  valueSpan.textContent = options.find(o => o.value === defaultValue)?.label || defaultValue;
+  select.value = defaultValue;
+  
+  const iconSpan = document.createElement('i');
+  iconSpan.setAttribute('data-lucide', 'chevron-down');
+  iconSpan.style.width = '1rem';
+  iconSpan.style.height = '1rem';
+
+  trigger.appendChild(valueSpan);
+  trigger.appendChild(iconSpan);
+
+  const list = document.createElement('ul');
+  list.className = 'custom-select-options hidden hide-scrollbar';
+  
+  options.forEach(opt => {
+    const li = document.createElement('li');
+    li.textContent = opt.label;
+    li.dataset.value = opt.value;
+    if (opt.value === defaultValue) li.classList.add('selected');
+    
+    li.addEventListener('click', (e) => {
+      e.stopPropagation();
+      select.value = opt.value;
+      valueSpan.textContent = opt.label;
+      list.classList.add('hidden');
+      list.querySelectorAll('li').forEach(l => l.classList.remove('selected'));
+      li.classList.add('selected');
+      // Update the actual select's value and trigger change (though we don't have change listeners on these yet, good practice)
+      select.dispatchEvent(new Event('change'));
+    });
+    list.appendChild(li);
+  });
+
+  trigger.addEventListener('click', () => {
+    const isHidden = list.classList.contains('hidden');
+    document.querySelectorAll('.custom-select-options').forEach(el => el.classList.add('hidden'));
+    if (isHidden) {
+      list.classList.remove('hidden');
+      const selected = list.querySelector('.selected');
+      if (selected) {
+        setTimeout(() => selected.scrollIntoView({ block: 'nearest' }), 10);
+      }
+    }
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!wrapper.contains(e.target)) {
+      list.classList.add('hidden');
+    }
+  });
+
+  wrapper.appendChild(trigger);
+  wrapper.appendChild(list);
+  
+  select.parentNode.insertBefore(wrapper, select.nextSibling);
+}
+
 function populateTimeSelectors() {
   const startSel = document.getElementById('time-start-select');
   const endSel = document.getElementById('time-end-select');
@@ -224,24 +297,11 @@ function populateTimeSelectors() {
       times.push({ value, label });
     }
   }
-  // Add midnight end option
   times.push({ value: '24:00', label: '자정 (다음날)' });
 
-  times.forEach(t => {
-    const opt1 = document.createElement('option');
-    opt1.value = t.value;
-    opt1.textContent = t.label;
-    startSel.appendChild(opt1);
-
-    const opt2 = document.createElement('option');
-    opt2.value = t.value;
-    opt2.textContent = t.label;
-    endSel.appendChild(opt2);
-  });
-
-  // Defaults: 9:00 AM ~ 10:00 PM
-  startSel.value = '09:00';
-  endSel.value = '22:00';
+  createCustomSelect('time-start-select', times, '09:00');
+  createCustomSelect('time-end-select', times, '22:00');
+  if (window.lucide) window.lucide.createIcons();
 }
 
 function changePickerMonth(delta) {
