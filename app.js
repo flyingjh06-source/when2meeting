@@ -26,6 +26,11 @@ let selectedDatesSnapshot = null;
 let userDragStartIndex = -1;
 let userAvailabilitySnapshot = null;
 
+// Creation Mode State
+let creationMode = 'datetime';   // 'datetime' or 'dateonly'
+let creationDateMode = 'specific'; // 'specific' or 'days'
+let selectedDays = new Set();    // For day-of-week mode (e.g. 'mon', 'tue')
+
 // Document Elements
 const creationView = document.getElementById('creation-view');
 const eventView = document.getElementById('event-view');
@@ -87,7 +92,15 @@ async function loadEventData(eventId) {
     creationView.classList.add('hidden');
 
     // Render availability grids (heatmap is ready)
-    renderGroupHeatmap();
+    if (eventData.mode === 'datetime') {
+      document.querySelector('.heatmap-container').classList.add('hidden');
+      document.getElementById('datetime-group-grid').classList.remove('hidden');
+      renderDatetimeGroupGrid();
+    } else {
+      document.querySelector('.heatmap-container').classList.remove('hidden');
+      document.getElementById('datetime-group-grid').classList.add('hidden');
+      renderGroupHeatmap();
+    }
     renderParticipantList();
 
     // Check if session storage has signed-in user for this event
@@ -125,10 +138,112 @@ function initCreationCalendar() {
   if (btnPrev) btnPrev.addEventListener('click', () => changePickerMonth(-1));
   if (btnNext) btnNext.addEventListener('click', () => changePickerMonth(1));
 
-  document.getElementById('clear-selected-btn').addEventListener('click', () => {
-    selectedDates.clear();
-    renderPickerCalendar();
+  const clearBtn = document.getElementById('clear-selected-btn');
+  if (clearBtn) {
+    clearBtn.addEventListener('click', () => {
+      selectedDates.clear();
+      selectedDays.clear();
+      renderPickerCalendar();
+      // Reset day-of-week buttons
+      document.querySelectorAll('.dow-btn').forEach(b => b.classList.remove('active'));
+    });
+  }
+
+  // Initialize mode toggles
+  initModeToggles();
+  // Populate time selectors
+  populateTimeSelectors();
+}
+
+function initModeToggles() {
+  // Mode toggle: datetime / dateonly
+  const datetimeBtn = document.getElementById('mode-datetime-btn');
+  const dateonlyBtn = document.getElementById('mode-dateonly-btn');
+  if (datetimeBtn && dateonlyBtn) {
+    datetimeBtn.addEventListener('click', () => {
+      creationMode = 'datetime';
+      datetimeBtn.classList.add('active');
+      dateonlyBtn.classList.remove('active');
+      document.getElementById('time-range-group').classList.remove('hidden');
+    });
+    dateonlyBtn.addEventListener('click', () => {
+      creationMode = 'dateonly';
+      dateonlyBtn.classList.add('active');
+      datetimeBtn.classList.remove('active');
+      document.getElementById('time-range-group').classList.add('hidden');
+    });
+  }
+
+  // Date mode toggle: specific / days
+  const specificBtn = document.getElementById('datemode-specific-btn');
+  const daysBtn = document.getElementById('datemode-days-btn');
+  if (specificBtn && daysBtn) {
+    specificBtn.addEventListener('click', () => {
+      creationDateMode = 'specific';
+      specificBtn.classList.add('active');
+      daysBtn.classList.remove('active');
+      document.getElementById('day-of-week-group').classList.add('hidden');
+      document.getElementById('creation-right-calendar').classList.remove('hidden');
+    });
+    daysBtn.addEventListener('click', () => {
+      creationDateMode = 'days';
+      daysBtn.classList.add('active');
+      specificBtn.classList.remove('active');
+      document.getElementById('day-of-week-group').classList.remove('hidden');
+      document.getElementById('creation-right-calendar').classList.add('hidden');
+    });
+  }
+
+  // Day of week buttons
+  document.querySelectorAll('.dow-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const day = btn.dataset.day;
+      if (selectedDays.has(day)) {
+        selectedDays.delete(day);
+        btn.classList.remove('active');
+      } else {
+        selectedDays.add(day);
+        btn.classList.add('active');
+      }
+    });
   });
+}
+
+function populateTimeSelectors() {
+  const startSel = document.getElementById('time-start-select');
+  const endSel = document.getElementById('time-end-select');
+  if (!startSel || !endSel) return;
+
+  const times = [];
+  for (let h = 0; h < 24; h++) {
+    for (let m = 0; m < 60; m += 30) {
+      const hh = String(h).padStart(2, '0');
+      const mm = String(m).padStart(2, '0');
+      const value = `${hh}:${mm}`;
+      const ampm = h < 12 ? '오전' : '오후';
+      const displayH = h === 0 ? 12 : h > 12 ? h - 12 : h;
+      const label = `${ampm} ${displayH}:${mm}`;
+      times.push({ value, label });
+    }
+  }
+  // Add midnight end option
+  times.push({ value: '24:00', label: '자정 (다음날)' });
+
+  times.forEach(t => {
+    const opt1 = document.createElement('option');
+    opt1.value = t.value;
+    opt1.textContent = t.label;
+    startSel.appendChild(opt1);
+
+    const opt2 = document.createElement('option');
+    opt2.value = t.value;
+    opt2.textContent = t.label;
+    endSel.appendChild(opt2);
+  });
+
+  // Defaults: 9:00 AM ~ 10:00 PM
+  startSel.value = '09:00';
+  endSel.value = '22:00';
 }
 
 function changePickerMonth(delta) {
@@ -321,7 +436,15 @@ async function signInUser() {
   const backBtn = document.getElementById('back-to-main-container');
   if (backBtn) backBtn.classList.add('hidden');
 
-  renderUserCalendarGrid();
+  if (eventData.mode === 'datetime') {
+    document.querySelector('#availability-input-section .custom-calendar-container').classList.add('hidden');
+    document.getElementById('datetime-user-grid').classList.remove('hidden');
+    renderDatetimeUserGrid();
+  } else {
+    document.querySelector('#availability-input-section .custom-calendar-container').classList.remove('hidden');
+    document.getElementById('datetime-user-grid').classList.add('hidden');
+    renderUserCalendarGrid();
+  }
 }
 
 function renderUserCalendarGrid() {
@@ -506,9 +629,13 @@ function showTooltip(cell, dateStr, availableUsers) {
   const percentage = totalParticipants > 0 ? Math.round((countYes / totalParticipants) * 100) : 0;
 
   // Format Date title in tooltip
-  const daysKo = ['일', '월', '화', '수', '목', '금', '토'];
-  const d = new Date(dateStr);
-  dateText.textContent = `${d.getFullYear()}년 ${d.getMonth() + 1}월 ${d.getDate()}일 (${daysKo[d.getDay()]})`;
+  if (dateStr.includes('T') || dateStr.includes('오전') || dateStr.includes('오후') || dateStr.includes('요일')) {
+    dateText.textContent = dateStr;
+  } else {
+    const daysKo = ['일', '월', '화', '수', '목', '금', '토'];
+    const d = new Date(dateStr);
+    dateText.textContent = `${d.getFullYear()}년 ${d.getMonth() + 1}월 ${d.getDate()}일 (${daysKo[d.getDay()]})`;
+  }
 
   ratioText.textContent = `${totalParticipants}명 중 ${countYes}명 가능 (${percentage}%)`;
 
@@ -639,7 +766,7 @@ function setupEventListeners() {
   // Mobile Touch Drag Support
   window.addEventListener('touchstart', (e) => {
     const target = e.target;
-    const cell = target.closest('.calendar-day, .date-slot');
+    const cell = target.closest('.calendar-day, .date-slot, .time-slot');
     if (!cell) return;
     if (cell.classList.contains('empty') || cell.classList.contains('not-candidate')) return;
     
@@ -647,6 +774,15 @@ function setupEventListeners() {
     isDragging = true;
     
     const isCreation = cell.classList.contains('calendar-day');
+    const isDatetime = cell.classList.contains('time-slot');
+
+    if (isDatetime) {
+      const slotKey = cell.dataset.key;
+      dragSelectMode = !userAvailability.has(slotKey);
+      toggleDatetimeSlot(cell, slotKey, dragSelectMode);
+      return;
+    }
+
     const dateStr = isCreation ? cell.dataset.date : cell.dataset.dateString;
     const parts = dateStr.split('-');
     const cellDate = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
@@ -671,11 +807,19 @@ function setupEventListeners() {
     const target = document.elementFromPoint(touch.clientX, touch.clientY);
     if (!target) return;
     
-    const cell = target.closest('.calendar-day, .date-slot');
+    const cell = target.closest('.calendar-day, .date-slot, .time-slot');
     if (!cell) return;
     if (cell.classList.contains('empty') || cell.classList.contains('not-candidate')) return;
     
     const isCreation = cell.classList.contains('calendar-day');
+    const isDatetime = cell.classList.contains('time-slot');
+
+    if (isDatetime) {
+      const slotKey = cell.dataset.key;
+      toggleDatetimeSlot(cell, slotKey, dragSelectMode);
+      return;
+    }
+
     const dateStr = isCreation ? cell.dataset.date : cell.dataset.dateString;
     const parts = dateStr.split('-');
     const cellDate = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
@@ -802,13 +946,37 @@ async function createEvent() {
     alert('모임 이름을 입력해 주세요.');
     return;
   }
-  
-  if (selectedDates.size === 0) {
-    alert('후보 날짜를 하나 이상 선택해 주세요.');
-    return;
+
+  let datesArray;
+  if (creationDateMode === 'days') {
+    if (selectedDays.size === 0) {
+      alert('요일을 하나 이상 선택해 주세요.');
+      return;
+    }
+    datesArray = Array.from(selectedDays);
+  } else {
+    if (selectedDates.size === 0) {
+      alert('후보 날짜를 하나 이상 선택해 주세요.');
+      return;
+    }
+    datesArray = Array.from(selectedDates);
   }
 
-  const datesArray = Array.from(selectedDates);
+  const payload = {
+    title: title,
+    dates: datesArray,
+    mode: creationMode,
+    date_mode: creationDateMode
+  };
+
+  if (creationMode === 'datetime') {
+    payload.time_start = document.getElementById('time-start-select').value;
+    payload.time_end = document.getElementById('time-end-select').value;
+    if (payload.time_start >= payload.time_end) {
+      alert('종료 시간은 시작 시간보다 나중이어야 합니다.');
+      return;
+    }
+  }
 
   try {
     const res = await fetch(`${API_BASE}/events`, {
@@ -816,16 +984,12 @@ async function createEvent() {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({
-        title: title,
-        dates: datesArray
-      })
+      body: JSON.stringify(payload)
     });
 
     if (!res.ok) throw new Error('이벤트 생성 실패');
 
     const result = await res.json();
-    // Redirect to the event view URL
     window.location.search = `?id=${result.id}`;
   } catch (error) {
     console.error('Error creating event:', error);
@@ -972,4 +1136,196 @@ function formatDate(date) {
   if (day.length < 2) day = '0' + day;
 
   return [year, month, day].join('-');
+}
+
+// -------------------------------------------------------------
+// DATETIME GRID (when2meet style)
+// -------------------------------------------------------------
+function generateTimeSlots(timeStart, timeEnd) {
+  const slots = [];
+  const start = timeStart.split(':').map(Number);
+  const end = timeEnd.split(':').map(Number);
+  let h = start[0], m = start[1];
+  const endH = end[0], endM = end[1];
+
+  while (h < endH || (h === endH && m < endM)) {
+    const hh = String(h).padStart(2, '0');
+    const mm = String(m).padStart(2, '0');
+    slots.push(`${hh}:${mm}`);
+    m += 30;
+    if (m >= 60) {
+      m -= 60;
+      h++;
+    }
+  }
+  return slots;
+}
+
+function formatTimeLabel(timeStr) {
+  const parts = timeStr.split(':');
+  let h = parseInt(parts[0], 10);
+  const m = parts[1];
+  const ampm = h < 12 ? '오전' : '오후';
+  if (h === 0) h = 12;
+  else if (h > 12) h -= 12;
+  return `${ampm} ${h}:${m}`;
+}
+
+function renderDatetimeGroupGrid() {
+  const container = document.getElementById('datetime-group-grid');
+  container.innerHTML = '';
+
+  const dates = [...eventData.dates].sort();
+  const timeSlots = generateTimeSlots(eventData.time_start || '09:00', eventData.time_end || '22:00');
+  const totalParticipants = groupAvailability.length;
+
+  const grid = document.createElement('div');
+  grid.className = 'time-grid';
+  grid.style.gridTemplateColumns = `60px repeat(${dates.length}, minmax(40px, 1fr))`;
+
+  const emptyCorner = document.createElement('div');
+  grid.appendChild(emptyCorner);
+
+  dates.forEach(d => {
+    const header = document.createElement('div');
+    header.className = 'time-grid-header';
+    if (eventData.date_mode === 'days') {
+      const daysMap = { sun: '일', mon: '월', tue: '화', wed: '수', thu: '목', fri: '금', sat: '토' };
+      header.textContent = daysMap[d] || d;
+    } else {
+      const parts = d.split('-');
+      header.innerHTML = `${parts[1]}/${parts[2]}<br>` + 
+        ['일','월','화','수','목','금','토'][new Date(d).getDay()];
+    }
+    grid.appendChild(header);
+  });
+
+  timeSlots.forEach(time => {
+    const timeLabel = document.createElement('div');
+    timeLabel.className = 'time-label';
+    if (time.endsWith(':30')) {
+      timeLabel.classList.add('half-hour');
+      timeLabel.textContent = time; 
+    } else {
+      timeLabel.textContent = formatTimeLabel(time);
+    }
+    grid.appendChild(timeLabel);
+
+    dates.forEach(d => {
+      const slotKey = `${d}T${time}`;
+      const cell = document.createElement('div');
+      cell.className = 'time-slot';
+      cell.dataset.key = slotKey;
+
+      const availableUsers = groupAvailability.filter(avail => avail.available_dates.includes(slotKey));
+      const availableCount = availableUsers.length;
+
+      let heat = 0;
+      if (totalParticipants > 0 && availableCount > 0) {
+        const percentage = availableCount / totalParticipants;
+        if (percentage > 0.8) heat = 5;
+        else if (percentage > 0.6) heat = 4;
+        else if (percentage > 0.4) heat = 3;
+        else if (percentage > 0.2) heat = 2;
+        else heat = 1;
+      }
+      cell.classList.add(`heat-${heat}`);
+
+      let displayDate = d;
+      if (eventData.date_mode === 'days') {
+        const daysMap = { sun: '일요일', mon: '월요일', tue: '화요일', wed: '수요일', thu: '목요일', fri: '금요일', sat: '토요일' };
+        displayDate = daysMap[d] || d;
+      } else {
+        const parts = d.split('-');
+        displayDate = `${parts[0]}년 ${parts[1]}월 ${parts[2]}일 (${['일','월','화','수','목','금','토'][new Date(d).getDay()]})`;
+      }
+      const displayKey = `${displayDate} ${formatTimeLabel(time)}`;
+
+      cell.addEventListener('mouseenter', () => showTooltip(cell, displayKey, availableUsers));
+      cell.addEventListener('mouseleave', () => hideTooltip());
+
+      grid.appendChild(cell);
+    });
+  });
+
+  container.appendChild(grid);
+}
+
+function renderDatetimeUserGrid() {
+  const container = document.getElementById('datetime-user-grid');
+  container.innerHTML = '';
+
+  const dates = [...eventData.dates].sort();
+  const timeSlots = generateTimeSlots(eventData.time_start || '09:00', eventData.time_end || '22:00');
+
+  const grid = document.createElement('div');
+  grid.className = 'time-grid';
+  grid.style.gridTemplateColumns = `60px repeat(${dates.length}, minmax(40px, 1fr))`;
+
+  const emptyCorner = document.createElement('div');
+  grid.appendChild(emptyCorner);
+
+  dates.forEach(d => {
+    const header = document.createElement('div');
+    header.className = 'time-grid-header';
+    if (eventData.date_mode === 'days') {
+      const daysMap = { sun: '일', mon: '월', tue: '화', wed: '수', thu: '목', fri: '금', sat: '토' };
+      header.textContent = daysMap[d] || d;
+    } else {
+      const parts = d.split('-');
+      header.innerHTML = `${parts[1]}/${parts[2]}<br>` + 
+        ['일','월','화','수','목','금','토'][new Date(d).getDay()];
+    }
+    grid.appendChild(header);
+  });
+
+  timeSlots.forEach(time => {
+    const timeLabel = document.createElement('div');
+    timeLabel.className = 'time-label';
+    if (time.endsWith(':30')) {
+      timeLabel.classList.add('half-hour');
+      timeLabel.textContent = time; 
+    } else {
+      timeLabel.textContent = formatTimeLabel(time);
+    }
+    grid.appendChild(timeLabel);
+
+    dates.forEach(d => {
+      const slotKey = `${d}T${time}`;
+      const cell = document.createElement('div');
+      cell.className = 'time-slot';
+      cell.dataset.key = slotKey;
+      
+      if (userAvailability.has(slotKey)) {
+        cell.classList.add('available');
+      }
+
+      cell.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        isDragging = true;
+        dragSelectMode = !userAvailability.has(slotKey);
+        toggleDatetimeSlot(cell, slotKey, dragSelectMode);
+      });
+
+      cell.addEventListener('mouseenter', (e) => {
+        if (isDragging) {
+          toggleDatetimeSlot(cell, slotKey, dragSelectMode);
+        }
+      });
+
+      grid.appendChild(cell);
+    });
+  });
+
+  container.appendChild(grid);
+}
+
+function toggleDatetimeSlot(cell, slotKey, add) {
+  if (add) {
+    userAvailability.add(slotKey);
+    cell.classList.add('available');
+  } else {
+    userAvailability.delete(slotKey);
+    cell.classList.remove('available');
+  }
 }
