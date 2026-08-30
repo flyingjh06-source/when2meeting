@@ -44,7 +44,7 @@
     <main class="app-main">
       <!-- 1. CREATION VIEW (이벤트 생성 페이지) -->
       <section id="creation-view" class="view-card hidden creation-split">
-        <div class="creation-left">
+        <div class="creation-left hide-scrollbar">
           <div class="logo-zone" style="margin-bottom: 0.25rem;">
             <div class="logo">
               <i data-lucide="calendar-days" class="logo-icon" style="width: 1.2rem; height: 1.2rem;"></i>
@@ -277,7 +277,10 @@
                     <div id="group-heatmap-grid" class="heatmap-grid"></div>
                   </div>
                 </div>
-                <div id="datetime-group-grid" class="time-grid-container hidden"></div>
+                <div id="datetime-layout-container" class="datetime-split-layout hidden">
+                  <div id="mini-calendar-group" class="mini-calendar-container"></div>
+                  <div id="datetime-group-grid" class="time-grid-container" style="flex: 1; overflow-x: auto;"></div>
+                </div>
               </div>
             </div>
           </div>
@@ -289,16 +292,19 @@
                 <h3 id="user-panel-title">내 가능한 날짜 등록</h3>
                 <p class="panel-desc">드래그하여 가능한 날짜를 칠하거나 지우세요.</p>
               </div>
-              <div id="availability-input-section" class="availability-section">
-                <div class="custom-calendar-container">
-                  <div id="availability-calendar-grid"></div>
+              <div class="user-content-wrapper">
+                <div class="custom-calendar-container" id="user-input-grid-wrapper">
+                  <div id="user-input-grid" class="heatmap-grid user-grid"></div>
                 </div>
-                <div id="datetime-user-grid" class="time-grid-container hidden"></div>
-                <div class="save-status-container">
-                  <div id="save-status" class="save-status">
-                    <i data-lucide="check-circle" class="status-icon"></i>
-                    <span id="save-status-text">저장 완료</span>
-                  </div>
+                <div id="datetime-user-layout-container" class="datetime-split-layout hidden">
+                  <div id="mini-calendar-user" class="mini-calendar-container"></div>
+                  <div id="datetime-user-grid" class="time-grid-container user-grid" style="flex: 1; overflow-x: auto;"></div>
+                </div>
+              </div>
+              <div class="save-status-container">
+                <div id="save-status" class="save-status">
+                  <i data-lucide="check-circle" class="status-icon"></i>
+                  <span id="save-status-text">저장 완료</span>
                 </div>
               </div>
             </div>
