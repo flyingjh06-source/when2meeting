@@ -220,9 +220,7 @@ function populateTimeSelectors() {
       const hh = String(h).padStart(2, '0');
       const mm = String(m).padStart(2, '0');
       const value = `${hh}:${mm}`;
-      const ampm = h < 12 ? '오전' : '오후';
-      const displayH = h === 0 ? 12 : h > 12 ? h - 12 : h;
-      const label = `${ampm} ${displayH}:${mm}`;
+      const label = `${hh}:${mm}`;
       times.push({ value, label });
     }
   }
@@ -1162,13 +1160,7 @@ function generateTimeSlots(timeStart, timeEnd) {
 }
 
 function formatTimeLabel(timeStr) {
-  const parts = timeStr.split(':');
-  let h = parseInt(parts[0], 10);
-  const m = parts[1];
-  const ampm = h < 12 ? '오전' : '오후';
-  if (h === 0) h = 12;
-  else if (h > 12) h -= 12;
-  return `${ampm} ${h}:${m}`;
+  return timeStr;
 }
 
 function renderDatetimeGroupGrid() {
