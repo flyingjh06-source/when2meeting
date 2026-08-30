@@ -1,12 +1,12 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>when2meeting - ?좎쭨 議곗쑉 ?뚮옯??/title>
+  <title>when2meeting - 날짜 조율 플랫폼</title>
   <!-- SEO Meta Tags -->
-  <meta name="description" content="洹몃９?먮뱾??媛?ν븳 ?좎쭨瑜??쎄쾶 痍⑦빀?섍퀬 ?쒕늿???뺤씤?????덈뒗 紐⑤뜕 ?ㅼ?以?議곗쑉 ?ъ씠??>
-  <meta name="keywords" content="when2meet, ?ы닾諛? when2meeting, ?좎쭨 議곗쑉, ?ㅼ?以?議곗쑉, 罹섎┛?? 紐⑥엫 ?쒓컙">
+  <meta name="description" content="그룹원들의 가능한 날짜를 쉽게 취합하고 한눈에 확인할 수 있는 모던 스케줄 조율 사이트">
+  <meta name="keywords" content="when2meet, 웬투밋, when2meeting, 날짜 조율, 스케줄 조율, 캘린더, 모임 시간">
   
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -25,11 +25,8 @@
   <div class="glow-bg glow-2"></div>
 
   <div class="app-container">
-    <!-- Header -->
-    
-
     <main class="app-main">
-            <!-- 1. CREATION VIEW (이벤트 생성 페이지) -->
+      <!-- 1. CREATION VIEW (이벤트 생성 페이지) -->
       <section id="creation-view" class="view-card hidden creation-split">
         <div class="creation-left">
           <div class="card-header" style="text-align: left; margin-bottom: 2rem;">
@@ -78,7 +75,7 @@
         </div>
       </section>
 
-      <!-- 2. EVENT VIEW (?쇱젙 痍⑦빀 諛?寃곌낵 ?섏씠吏) -->
+      <!-- 2. EVENT VIEW (일정 취합 및 결과 페이지) -->
       <section id="event-view" class="event-layout split-layout hidden">
         
         <!-- LEFT PANEL: Info, Login, Participants -->
@@ -98,34 +95,35 @@
             <!-- STATE A: Login Form (Main View, Not Logged In) -->
             <div id="login-form-container" class="panel-card glass-panel">
               <div class="panel-header">
-                <h3>???쇱젙 ?깅줉?섍린</h3>
-                <p class="panel-desc">?대쫫???낅젰?섍퀬 濡쒓렇?명븯???섏쓽 媛?ν븳 ?쇱젙???깅줉?섏꽭??</p>
+                <h3>내 일정 등록하기</h3>
+                <p class="panel-desc">이름을 입력하고 로그인하여 나의 가능한 일정을 등록하세요.</p>
               </div>
               <div class="form-group">
-                <label for="user-name">?대쫫 (?ㅻ챸)</label>
+                <label for="user-name">이름 (실명)</label>
                 <div class="input-wrapper">
                   <i data-lucide="user" class="input-icon"></i>
-                  <input type="text" id="user-name" placeholder="?대쫫???낅젰?섏꽭?? autocomplete="off">
+                  <input type="text" id="user-name" placeholder="이름을 입력하세요" autocomplete="off">
                 </div>
               </div>
               <div class="form-group">
-                <label for="user-password">鍮꾨?踰덊샇 <span class="label-desc">(?섏젙???좏깮)</span></label>
+                <label for="user-password">비밀번호 <span class="label-desc">(수정용/선택)</span></label>
                 <div class="input-wrapper">
                   <i data-lucide="lock" class="input-icon"></i>
-                  <input type="password" id="user-password" placeholder="鍮꾨?踰덊샇">
+                  <input type="password" id="user-password" placeholder="비밀번호">
                 </div>
               </div>
-              <button id="signin-btn" class="btn btn-primary btn-block">?쇱젙 ?낅젰 ?쒖옉?섍린</button>
+              <button id="signin-btn" class="btn btn-primary btn-block">일정 입력 시작하기</button>
             </div>
 
             <!-- STATE B: Logged-in Menu (Main View, Logged In) -->
             <div id="logged-in-menu-container" class="panel-card glass-panel hidden">
               <div class="panel-header" style="margin-bottom: 0;">
                 <p style="margin-bottom: 1.5rem; color: var(--text-secondary); text-align: center;">
-                  <span class="user-accent" id="active-user-name-main" style="font-weight:700; color:var(--color-primary);"></span> ?섏쑝濡?濡쒓렇????                </p>
+                  <span class="user-accent" id="active-user-name-main" style="font-weight:700; color:var(--color-primary);"></span> 님으로 로그인 됨
+                </p>
                 <div style="display:flex; flex-direction:column; gap:10px;">
-                    <button id="goto-input-btn" class="btn btn-primary btn-block" style="padding: 1rem; font-size: 1.05rem;">??媛?ν븳 ?쒓컙 ?낅젰</button>
-                    <button id="signout-btn-main" class="btn btn-secondary btn-block">濡쒓렇?꾩썐</button>
+                    <button id="goto-input-btn" class="btn btn-primary btn-block" style="padding: 1rem; font-size: 1.05rem;">내 가능한 시간 입력</button>
+                    <button id="signout-btn-main" class="btn btn-secondary btn-block">로그아웃</button>
                 </div>
               </div>
             </div>
@@ -134,7 +132,7 @@
             <div id="back-to-main-container" class="panel-card glass-panel hidden">
               <div class="panel-header" style="margin-bottom: 0;">
                 <button id="back-to-main-btn" class="btn btn-primary btn-block" style="padding: 1rem; font-size: 1.05rem;">
-                  <i data-lucide="arrow-left" class="btn-icon"></i> 硫붿씤 ?붾㈃?쇰줈
+                  <i data-lucide="arrow-left" class="btn-icon"></i> 메인 화면으로
                 </button>
               </div>
             </div>
@@ -143,7 +141,7 @@
             <div id="participant-sidebar" class="participant-sidebar">
               <h4 class="sidebar-title">
                 <i data-lucide="users" class="title-icon"></i>
-                <span>李몄뿬??(<span id="participant-count">0</span>紐?</span>
+                <span>참여자 (<span id="participant-count">0</span>명)</span>
               </h4>
               <ul id="participant-list" class="participant-list">
                 <!-- JS will list participants -->
@@ -160,13 +158,13 @@
           <div id="group-results-view" class="dynamic-right-view">
             <div class="event-banner">
               <div class="event-info">
-                <h1 id="display-event-title">紐⑥엫 濡쒕뵫 以?..</h1>
+                <h1 id="display-event-title">모임 로딩 중...</h1>
                 <div class="share-url-container">
-                  <span class="url-label">怨듭쑀 留곹겕:</span>
+                  <span class="url-label">공유 링크:</span>
                   <input type="text" id="share-url-input" readonly>
-                  <button id="copy-url-btn" class="btn btn-copy" title="留곹겕 蹂듭궗">
+                  <button id="copy-url-btn" class="btn btn-copy" title="링크 복사">
                     <i data-lucide="copy" class="btn-icon"></i>
-                    <span class="copy-text">蹂듭궗</span>
+                    <span class="copy-text">복사</span>
                   </button>
                 </div>
               </div>
@@ -174,8 +172,8 @@
 
             <div class="panel-card glass-panel" id="group-results-panel" style="flex:1;">
               <div class="panel-header">
-                <h3>洹몃９ 議곗쑉 寃곌낵</h3>
-                <p class="panel-desc">珥덈줉?됱씠 吏숈쓣?섎줉 ??留롮? ?щ엺??媛?ν빀?덈떎.</p>
+                <h3>그룹 조율 결과</h3>
+                <p class="panel-desc">초록색이 짙을수록 더 많은 사람이 가능합니다.</p>
               </div>
               <div class="group-content-wrapper">
                 <div class="heatmap-container">
@@ -185,15 +183,15 @@
                   
                   <!-- Interactive Tooltip Card -->
                   <div id="date-tooltip-card" class="tooltip-card hidden">
-                    <h4 id="tooltip-date">2026??6??22??/h4>
-                    <div id="tooltip-ratio" class="tooltip-badge">0紐?以?0紐?媛??(0%)</div>
+                    <h4 id="tooltip-date">2026년 6월 22일</h4>
+                    <div id="tooltip-ratio" class="tooltip-badge">0명 중 0명 가능 (0%)</div>
                     <div class="tooltip-lists">
                       <div class="tooltip-list-section">
-                        <div class="list-title green-text"><i data-lucide="check" class="list-icon"></i> 媛??(<span id="tooltip-count-yes">0</span>)</div>
+                        <div class="list-title green-text"><i data-lucide="check" class="list-icon"></i> 가능 (<span id="tooltip-count-yes">0</span>)</div>
                         <ul id="tooltip-list-yes" class="tooltip-list"></ul>
                       </div>
                       <div class="tooltip-list-section">
-                        <div class="list-title red-text"><i data-lucide="x" class="list-icon"></i> 遺덇???(<span id="tooltip-count-no">0</span>)</div>
+                        <div class="list-title red-text"><i data-lucide="x" class="list-icon"></i> 불가능 (<span id="tooltip-count-no">0</span>)</div>
                         <ul id="tooltip-list-no" class="tooltip-list"></ul>
                       </div>
                     </div>
@@ -207,8 +205,8 @@
           <div id="user-input-view" class="dynamic-right-view hidden">
             <div class="panel-card glass-panel" id="user-availability-panel" style="flex:1;">
               <div class="panel-header">
-                <h3 id="user-panel-title">??媛?ν븳 ?좎쭨 ?깅줉</h3>
-                <p class="panel-desc">?쒕옒洹명븯??媛?ν븳 ?좎쭨瑜?移좏븯嫄곕굹 吏?곗꽭??</p>
+                <h3 id="user-panel-title">내 가능한 날짜 등록</h3>
+                <p class="panel-desc">드래그하여 가능한 날짜를 칠하거나 지우세요.</p>
               </div>
               <div id="availability-input-section" class="availability-section">
                 <div class="custom-calendar-container">
@@ -217,7 +215,7 @@
                 <div class="save-status-container">
                   <div id="save-status" class="save-status">
                     <i data-lucide="check-circle" class="status-icon"></i>
-                    <span id="save-status-text">????꾨즺</span>
+                    <span id="save-status-text">저장 완료</span>
                   </div>
                 </div>
               </div>
@@ -230,15 +228,14 @@
 
     <!-- Footer -->
     <footer class="app-footer">
-      <p>&copy; 2026 ?ы닾誘명똿 (when2meeting). 紐⑤뱺 沅뚮━ 蹂댁쑀.</p>
+      <p>&copy; 2026 웬투미팅 (when2meeting). 모든 권리 보유.</p>
     </footer>
   </div>
 
   <!-- Toast Notification -->
-  <div id="toast" class="toast hidden">URL 蹂듭궗 ?꾨즺!</div>
+  <div id="toast" class="toast hidden">URL 복사 완료!</div>
 
   <!-- Scripts -->
   <script src="app.js" type="module"></script>
 </body>
 </html>
-
