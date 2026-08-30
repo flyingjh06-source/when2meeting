@@ -1294,3 +1294,41 @@ input[type="text"]:focus + .input-icon, input[type="password"]:focus + .input-ic
   flex-direction: column !important;
   justify-content: flex-start !important;
 }
+
+/* ==========================================================================
+   CREATION VIEW SPLIT LAYOUT (Desktop only)
+   ========================================================================== */
+.creation-split {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+.creation-left {
+  display: flex;
+  flex-direction: column;
+}
+.creation-right {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 900px) {
+  #creation-view.creation-split {
+    flex-direction: row;
+    max-width: 1000px;
+    align-items: stretch;
+    padding: 2.5rem 3rem !important;
+  }
+  .creation-left {
+    flex: 0 0 320px;
+    padding-right: 2rem;
+    border-right: 1px solid var(--border-color);
+  }
+  .creation-right {
+    flex: 1;
+    padding-left: 1rem;
+  }
+}
+.app-main {
+  overflow-y: hidden !important;
+}
