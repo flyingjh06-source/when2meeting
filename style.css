@@ -1495,7 +1495,7 @@ input[type="text"]:focus + .input-icon, input[type="password"]:focus + .input-ic
     max-width: 1200px;
     align-items: stretch;
     padding: 1.5rem 2rem !important;
-    height: 520px;
+    height: 580px;
   }
   .creation-left {
     flex: 0 0 340px;
