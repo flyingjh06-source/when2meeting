@@ -22,7 +22,9 @@ let isDragging = false;
 let dragSelectMode = true; // true = selecting, false = deselecting
 let dragStartDate = null;
 let dragStartSlotKey = null;
+let dragStartDow = null;
 let selectedDatesSnapshot = null;
+let selectedDaysSnapshot = null;
 
 let userDragStartIndex = -1;
 let userAvailabilitySnapshot = null;
@@ -201,16 +203,42 @@ function initModeToggles() {
 
   // Day of week buttons
   document.querySelectorAll('.dow-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      isDragging = true;
       const day = btn.dataset.day;
-      if (selectedDays.has(day)) {
-        selectedDays.delete(day);
-        btn.classList.remove('active');
-      } else {
-        selectedDays.add(day);
-        btn.classList.add('active');
+      dragSelectMode = !selectedDays.has(day);
+      dragStartDow = day;
+      selectedDaysSnapshot = new Set(selectedDays);
+      updateDowSelectionRange(day, day);
+    });
+
+    btn.addEventListener('mouseenter', () => {
+      if (isDragging) {
+        updateDowSelectionRange(dragStartDow, btn.dataset.day);
       }
     });
+  });
+}
+
+function updateDowSelectionRange(startDay, endDay) {
+  selectedDays = new Set(selectedDaysSnapshot);
+  const daysOfWeek = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+  const i1 = daysOfWeek.indexOf(startDay);
+  const i2 = daysOfWeek.indexOf(endDay);
+  if (i1 === -1 || i2 === -1) return;
+  
+  const minI = Math.min(i1, i2);
+  const maxI = Math.max(i1, i2);
+  
+  for (let i = minI; i <= maxI; i++) {
+    if (dragSelectMode) selectedDays.add(daysOfWeek[i]);
+    else selectedDays.delete(daysOfWeek[i]);
+  }
+  
+  document.querySelectorAll('.dow-btn').forEach(btn => {
+    if (selectedDays.has(btn.dataset.day)) btn.classList.add('active');
+    else btn.classList.remove('active');
   });
 }
 
@@ -836,12 +864,22 @@ function setupEventListeners() {
   // Mobile Touch Drag Support
   window.addEventListener('touchstart', (e) => {
     const target = e.target;
-    const cell = target.closest('.calendar-day, .date-slot, .time-slot');
+    const cell = target.closest('.calendar-day, .date-slot, .time-slot, .dow-btn');
     if (!cell) return;
     if (cell.classList.contains('empty') || cell.classList.contains('not-candidate')) return;
     
     e.preventDefault();
     isDragging = true;
+    
+    const isDowBtn = cell.classList.contains('dow-btn');
+    if (isDowBtn) {
+      const day = cell.dataset.day;
+      dragSelectMode = !selectedDays.has(day);
+      dragStartDow = day;
+      selectedDaysSnapshot = new Set(selectedDays);
+      updateDowSelectionRange(day, day);
+      return;
+    }
     
     const isCreation = cell.classList.contains('calendar-day');
     const isDatetime = cell.classList.contains('time-slot');
@@ -879,9 +917,15 @@ function setupEventListeners() {
     const target = document.elementFromPoint(touch.clientX, touch.clientY);
     if (!target) return;
     
-    const cell = target.closest('.calendar-day, .date-slot, .time-slot');
+    const cell = target.closest('.calendar-day, .date-slot, .time-slot, .dow-btn');
     if (!cell) return;
     if (cell.classList.contains('empty') || cell.classList.contains('not-candidate')) return;
+    
+    const isDowBtn = cell.classList.contains('dow-btn');
+    if (isDowBtn) {
+      updateDowSelectionRange(dragStartDow, cell.dataset.day);
+      return;
+    }
     
     const isCreation = cell.classList.contains('calendar-day');
     const isDatetime = cell.classList.contains('time-slot');
