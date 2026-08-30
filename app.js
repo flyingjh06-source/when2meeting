@@ -104,7 +104,7 @@ async function loadEventData(eventId) {
     if (window.lucide) window.lucide.createIcons();
   } catch (error) {
     console.error('Error loading event:', error);
-    alert('모임 데이터를 불러오는 중 오류가 발생했습니다.');
+    alert('모임 정보를 불러오는 중 오류가 발생했습니다.');
   }
 }
 
@@ -241,10 +241,12 @@ function updatePickerSelectionRange(startD, endD) {
 function showMainEventView() {
   document.getElementById('user-input-view').classList.add('hidden');
   document.getElementById('main-heatmap-view').classList.remove('hidden');
+  const mainHeader = document.getElementById('main-app-header');
+  if (mainHeader) mainHeader.classList.add('hidden');
 }
 
 function showUserInputView() {
-  document.getElementById('main-heatmap-view').classList.hidden = true;
+  document.getElementById('main-heatmap-view').classList.add('hidden');
   document.getElementById('user-input-view').classList.remove('hidden');
 }
 
