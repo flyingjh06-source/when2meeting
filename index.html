@@ -95,18 +95,6 @@
             </div>
           </div>
 
-          <!-- Day of Week Picker (shown when datemode=days) -->
-          <div class="form-group hidden" id="day-of-week-group" style="margin-bottom: 1.25rem;">
-            <label>요일 선택</label>
-            <div class="day-of-week-picker" id="day-of-week-picker">
-              <button type="button" class="dow-btn" data-day="sun">일</button>
-              <button type="button" class="dow-btn" data-day="mon">월</button>
-              <button type="button" class="dow-btn" data-day="tue">화</button>
-              <button type="button" class="dow-btn" data-day="wed">수</button>
-              <button type="button" class="dow-btn" data-day="thu">목</button>
-              <button type="button" class="dow-btn" data-day="fri">금</button>
-              <button type="button" class="dow-btn" data-day="sat">토</button>
-            </div>
           </div>
 
           <div class="selection-actions" style="margin-top: auto; justify-content: flex-start; gap: 1rem;">
@@ -118,23 +106,44 @@
           </div>
         </div>
 
-        <div class="creation-right" id="creation-right-calendar">
-          <div class="form-group" style="margin-bottom: 0; display: flex; flex-direction: column; height: 100%;">
-            <label style="margin-bottom: 1rem;">후보 날짜 선택 <span class="label-desc">(드래그하거나 클릭하여 여러 날짜를 선택할 수 있습니다)</span></label>
-            <div class="calendar-picker-container" style="flex: 1; max-width: none; margin: 0;">
-              <!-- Calendar Navigation -->
-              <div class="calendar-nav">
-                <button id="prev-month-btn" class="nav-btn"><span style="font-weight:bold; font-size:1.2rem;">&lt;</span></button>
-                <h3 id="calendar-month-year">2026년 8월</h3>
-                <button id="next-month-btn" class="nav-btn"><span style="font-weight:bold; font-size:1.2rem;">&gt;</span></button>
-              </div>
-              <!-- Calendar Grid -->
-              <div class="calendar-grid-wrapper">
-                <div class="weekday-header">
-                  <div>일</div><div>월</div><div>화</div><div>수</div><div>목</div><div>금</div><div>토</div>
+        <div class="creation-right">
+          <!-- 특정 날짜 선택 캘린더 -->
+          <div id="creation-right-calendar" style="height: 100%;">
+            <div class="form-group" style="margin-bottom: 0; display: flex; flex-direction: column; height: 100%;">
+              <label style="margin-bottom: 1rem;">후보 날짜 선택 <span class="label-desc">(드래그하거나 클릭하여 여러 날짜를 선택할 수 있습니다)</span></label>
+              <div class="calendar-picker-container" style="flex: 1; max-width: none; margin: 0;">
+                <!-- Calendar Navigation -->
+                <div class="calendar-nav">
+                  <button id="prev-month-btn" class="nav-btn"><span style="font-weight:bold; font-size:1.2rem;">&lt;</span></button>
+                  <h3 id="calendar-month-year">2026년 8월</h3>
+                  <button id="next-month-btn" class="nav-btn"><span style="font-weight:bold; font-size:1.2rem;">&gt;</span></button>
                 </div>
-                <div id="calendar-picker-grid" class="calendar-grid">
-                  <!-- Javascript will populate days -->
+                <!-- Calendar Grid -->
+                <div class="calendar-grid-wrapper">
+                  <div class="weekday-header">
+                    <div>일</div><div>월</div><div>화</div><div>수</div><div>목</div><div>금</div><div>토</div>
+                  </div>
+                  <div id="calendar-picker-grid" class="calendar-grid">
+                    <!-- Javascript will populate days -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 요일 선택 뷰 -->
+          <div id="day-of-week-group" class="hidden" style="height: 100%; display: flex; flex-direction: column;">
+            <div class="form-group" style="margin-bottom: 0; display: flex; flex-direction: column; height: 100%;">
+              <label style="margin-bottom: 1rem;">요일 선택 <span class="label-desc">(반복되는 요일을 선택해 주세요)</span></label>
+              <div class="calendar-picker-container" style="flex: 1; max-width: none; margin: 0; display: flex; align-items: stretch; padding: 2rem;">
+                <div class="day-of-week-picker" id="day-of-week-picker" style="flex: 1; align-items: stretch; gap: 0.5rem;">
+                  <button type="button" class="dow-btn" data-day="sun">일요일</button>
+                  <button type="button" class="dow-btn" data-day="mon">월요일</button>
+                  <button type="button" class="dow-btn" data-day="tue">화요일</button>
+                  <button type="button" class="dow-btn" data-day="wed">수요일</button>
+                  <button type="button" class="dow-btn" data-day="thu">목요일</button>
+                  <button type="button" class="dow-btn" data-day="fri">금요일</button>
+                  <button type="button" class="dow-btn" data-day="sat">토요일</button>
                 </div>
               </div>
             </div>
