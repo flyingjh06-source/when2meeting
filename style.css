@@ -258,6 +258,8 @@ input[type="text"]:focus + .input-icon, input[type="password"]:focus + .input-ic
   justify-content: center;
   gap: 0.5rem;
   padding: 0.9rem 1.75rem;
+  white-space: nowrap;
+  word-break: keep-all;
   border-radius: var(--radius-md);
   font-family: var(--font-body);
   font-size: 1rem;
@@ -446,6 +448,8 @@ input[type="text"]:focus + .input-icon, input[type="password"]:focus + .input-ic
   justify-content: space-between;
   align-items: center;
   margin-top: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
 /* Helper to prevent text selection during dragging */
