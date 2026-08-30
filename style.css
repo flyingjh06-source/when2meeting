@@ -468,6 +468,110 @@ input[type="text"]:focus + .input-icon, input[type="password"]:focus + .input-ic
   background: var(--color-primary-hover) !important;
 }
 
+/* ========================================================================
+   MODE TOGGLE (날짜&시간 / 날짜만, 특정 날짜 / 요일)
+   ======================================================================== */
+.mode-toggle {
+  display: flex;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+}
+
+.mode-toggle-btn {
+  flex: 1;
+  padding: 0.6rem 1rem;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+.mode-toggle-btn:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.mode-toggle-btn.active {
+  background: var(--color-primary);
+  color: #fff;
+  font-weight: 600;
+}
+
+/* Time Range Selector */
+.time-range-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.time-select {
+  flex: 1;
+  padding: 0.6rem 0.75rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  cursor: pointer;
+  appearance: auto;
+}
+
+.time-select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.15);
+}
+
+.time-range-separator {
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+/* Day of Week Picker */
+.day-of-week-picker {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.dow-btn {
+  flex: 1;
+  padding: 0.6rem 0;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-align: center;
+}
+
+.dow-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-primary);
+}
+
+.dow-btn.active {
+  background: var(--color-primary);
+  color: #fff;
+  border-color: var(--color-primary);
+  font-weight: 600;
+}
+
 .selection-actions {
   display: flex;
   justify-content: space-between;
@@ -1424,4 +1528,90 @@ input[type="text"]:focus + .input-icon, input[type="password"]:focus + .input-ic
 }
 .app-main {
   overflow-y: hidden !important;
+}
+
+/* ==========================================================================
+   DATETIME GRID STYLES
+   ========================================================================== */
+.time-grid-container {
+  overflow-x: auto;
+  background-color: var(--bg-input);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1rem;
+  max-width: 100%;
+}
+
+.time-grid {
+  display: grid;
+  gap: 2px;
+  user-select: none;
+  min-width: max-content;
+}
+
+.time-grid-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  padding: 0.5rem;
+  text-align: center;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.time-label {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding-right: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  height: 24px;
+  position: relative;
+}
+
+.time-label.half-hour {
+  color: transparent;
+}
+.time-label.half-hour::after {
+  content: '';
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  width: 8px;
+  height: 1px;
+  background-color: var(--border-color);
+}
+
+.time-slot {
+  height: 24px;
+  background-color: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.1s;
+}
+
+.time-slot:hover {
+  border-color: var(--text-secondary);
+  transform: scale(1.05);
+  z-index: 10;
+}
+
+.time-slot.available {
+  background-color: var(--hm-100);
+  border-color: var(--hm-100);
+}
+
+.time-slot.heat-0 { background-color: var(--hm-0); }
+.time-slot.heat-1 { background-color: var(--hm-20); border-color: rgba(16, 185, 129, 0.1); }
+.time-slot.heat-2 { background-color: var(--hm-40); border-color: rgba(16, 185, 129, 0.2); }
+.time-slot.heat-3 { background-color: var(--hm-60); border-color: rgba(16, 185, 129, 0.3); }
+.time-slot.heat-4 { background-color: var(--hm-80); border-color: rgba(16, 185, 129, 0.4); }
+.time-slot.heat-5 {
+  background-color: var(--hm-100);
+  border-color: var(--hm-100);
+  box-shadow: 0 0 4px rgba(16, 185, 129, 0.2);
 }
