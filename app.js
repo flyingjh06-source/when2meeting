@@ -309,8 +309,6 @@ function updateUserSelectionRange(startD, endD) {
     }
   });
 }
-  });
-}
 
 async function saveUserAvailability() {
   if (!activeUser.name) return;
