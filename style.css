@@ -1251,3 +1251,20 @@ input[type="text"]:focus + .input-icon, input[type="password"]:focus + .input-ic
   display: flex;
   flex-direction: column;
 }
+.app-main {
+  display: block; /* Remove flex to avoid squishing and centering issues */
+  overflow-y: auto;
+  height: 100%;
+}
+.view-card {
+  margin: 2rem auto; /* Give it space and center horizontally */
+  flex-shrink: 0;
+}
+.app-main {
+  display: flex !important; /* Restore flex */
+  overflow-y: auto !important;
+}
+.view-card {
+  margin: 2rem auto !important;
+  flex-shrink: 0 !important;
+}
