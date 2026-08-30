@@ -1268,3 +1268,29 @@ input[type="text"]:focus + .input-icon, input[type="password"]:focus + .input-ic
   margin: 2rem auto !important;
   flex-shrink: 0 !important;
 }
+
+/* ==========================================================================
+   CREATION VIEW COMPACT OVERRIDES (To fit in one screen)
+   ========================================================================== */
+.calendar-picker-container {
+  max-width: 450px;
+  margin: 0 auto;
+}
+#creation-view.view-card {
+  padding: 1.5rem 2rem !important;
+  margin: auto !important;
+  max-height: 95vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+#creation-view .card-header { margin-bottom: 1rem !important; }
+#creation-view .form-group { margin-bottom: 1rem !important; }
+#creation-view .calendar-nav { margin-bottom: 0.5rem !important; }
+#creation-view .selection-actions { margin-top: 1rem !important; }
+
+.app-main {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-start !important;
+}
