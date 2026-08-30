@@ -181,22 +181,24 @@
                 </div>
                 
                 <!-- Right: Interactive Tooltip Card -->
-                <div id="date-tooltip-card" class="tooltip-card hide-scrollbar" style="margin-top: 0; min-width: 250px; padding: 1rem; width: 100%; max-width: 350px; height: 140px; display: flex; flex-direction: column; justify-content: center; overflow-y: auto;">
-                  <div id="tooltip-placeholder" style="color: var(--text-muted); text-align: center; font-size: 0.9rem;">
-                    <i data-lucide="mouse-pointer-click" style="width: 1.5rem; height: 1.5rem; margin-bottom: 0.5rem; opacity: 0.5;"></i><br>
-                    달력의 날짜에 마우스를 올려<br>상세 참석자 정보를 확인하세요.
+                <div id="date-tooltip-card" class="tooltip-card hide-scrollbar" style="margin-top: 0; padding: 0.75rem 1.25rem; width: 100%; max-width: 700px; height: 75px; display: flex; flex-direction: row; justify-content: center; align-items: center; overflow: hidden; gap: 1rem;">
+                  <div id="tooltip-placeholder" style="color: var(--text-muted); text-align: center; font-size: 0.95rem; display: flex; align-items: center; gap: 0.75rem;">
+                    <i data-lucide="mouse-pointer-click" style="width: 1.2rem; height: 1.2rem; opacity: 0.5;"></i>
+                    달력의 날짜에 마우스를 올려 상세 참석자 정보를 확인하세요.
                   </div>
-                  <div id="tooltip-content" class="hidden">
-                    <h4 id="tooltip-date" style="margin-top:0">2026년 6월 22일</h4>
-                    <div id="tooltip-ratio" class="tooltip-badge">0명 중 0명 가능 (0%)</div>
-                    <div class="tooltip-lists" style="display: flex; gap: 1rem;">
-                      <div class="tooltip-list-section" style="flex: 1;">
-                        <div class="list-title green-text"><i data-lucide="check" class="list-icon"></i> 가능 (<span id="tooltip-count-yes">0</span>)</div>
-                        <ul id="tooltip-list-yes" class="tooltip-list"></ul>
+                  <div id="tooltip-content" class="hidden" style="display: flex; flex-direction: row; align-items: center; width: 100%; gap: 1.5rem; height: 100%;">
+                    <div style="flex-shrink: 0; min-width: 130px; display: flex; flex-direction: column; justify-content: center;">
+                      <h4 id="tooltip-date" style="margin-top:0; margin-bottom: 0.25rem; font-size: 0.95rem;">2026년 6월 22일</h4>
+                      <div id="tooltip-ratio" class="tooltip-badge" style="display: inline-block; font-size: 0.75rem;">0명 중 0명 가능 (0%)</div>
+                    </div>
+                    <div class="tooltip-lists" style="display: flex; gap: 1rem; flex: 1; height: 100%;">
+                      <div class="tooltip-list-section hide-scrollbar" style="flex: 1; display: flex; flex-direction: column; overflow-y: auto;">
+                        <div class="list-title green-text" style="white-space: nowrap; font-size: 0.85rem; margin-bottom: 0.2rem;"><i data-lucide="check" class="list-icon" style="width: 0.8rem; height: 0.8rem;"></i> 가능 (<span id="tooltip-count-yes">0</span>)</div>
+                        <ul id="tooltip-list-yes" class="tooltip-list" style="display: flex; flex-wrap: wrap; gap: 0.2rem 0.5rem; flex-direction: row; margin: 0; padding: 0;"></ul>
                       </div>
-                      <div class="tooltip-list-section" style="flex: 1;">
-                        <div class="list-title red-text"><i data-lucide="x" class="list-icon"></i> 불가능 (<span id="tooltip-count-no">0</span>)</div>
-                        <ul id="tooltip-list-no" class="tooltip-list"></ul>
+                      <div class="tooltip-list-section hide-scrollbar" style="flex: 1; display: flex; flex-direction: column; overflow-y: auto;">
+                        <div class="list-title red-text" style="white-space: nowrap; font-size: 0.85rem; margin-bottom: 0.2rem;"><i data-lucide="x" class="list-icon" style="width: 0.8rem; height: 0.8rem;"></i> 불가능 (<span id="tooltip-count-no">0</span>)</div>
+                        <ul id="tooltip-list-no" class="tooltip-list" style="display: flex; flex-wrap: wrap; gap: 0.2rem 0.5rem; flex-direction: row; margin: 0; padding: 0;"></ul>
                       </div>
                     </div>
                   </div>
