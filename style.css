@@ -1368,16 +1368,44 @@ input[type="text"]:focus + .input-icon, input[type="password"]:focus + .input-ic
     flex-direction: row;
     max-width: 1200px;
     align-items: stretch;
-    padding: 2.5rem 3rem !important;
+    padding: 2rem 2.5rem !important;
   }
   .creation-left {
-    flex: 0 0 380px;
+    flex: 0 0 340px;
     padding-right: 2rem;
     border-right: 1px solid var(--border-color);
   }
   .creation-right {
     flex: 1;
     padding-left: 1rem;
+    min-height: 0;
+    overflow: hidden;
+  }
+  /* Make calendar fill available height in creation view */
+  .creation-right .form-group {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+  }
+  .creation-right .calendar-picker-container {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .creation-right .calendar-grid-wrapper {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .creation-right .calendar-grid {
+    flex: 1;
+    grid-auto-rows: 1fr;
+  }
+  .creation-right .calendar-day {
+    aspect-ratio: unset;
   }
 }
 .app-main {
