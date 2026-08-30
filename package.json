@@ -1,0 +1,20 @@
+{
+  "name": "when2meeting",
+  "version": "1.0.0",
+  "description": "when2meeting - Date-based collaborative scheduling app",
+  "main": "server.js",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "pg": "^8.22.0"
+  },
+  "optionalDependencies": {
+    "sqlite3": "^5.1.7"
+  }
+}
