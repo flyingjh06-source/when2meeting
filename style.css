@@ -1490,6 +1490,7 @@ input[type="text"]:focus + .input-icon, input[type="password"]:focus + .input-ic
   flex-direction: row;
   gap: 1.5rem;
   height: 100%;
+  min-width: 0;
 }
 
 .mini-calendar-container {
@@ -1644,6 +1645,7 @@ input[type="text"]:focus + .input-icon, input[type="password"]:focus + .input-ic
    ========================================================================== */
 .time-grid-container {
   overflow-x: auto;
+  min-width: 0;
   background-color: var(--bg-input);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
