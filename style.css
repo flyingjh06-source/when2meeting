@@ -956,6 +956,11 @@ input[type="text"]:focus + .input-icon, input[type="password"]:focus + .input-ic
   border-color: var(--hm-100);
   box-shadow: 0 0 10px rgba(16, 185, 129, 0.15);
 }
+.heatmap-cell-max {
+  background-color: #f59e0b; /* Yellow/Amber */
+  border-color: #fbbf24;
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
+}
 
 /* Hover cell effect for tooltips */
 .heatmap-grid .date-slot:hover {
@@ -1438,6 +1443,53 @@ input[type="text"]:focus + .input-icon, input[type="password"]:focus + .input-ic
 /* ==========================================================================
    CREATION VIEW COMPACT OVERRIDES (To fit in one screen)
    ========================================================================== */
+.datetime-split-layout {
+  display: flex;
+  flex-direction: row;
+  gap: 1.5rem;
+  height: 100%;
+}
+
+.mini-calendar-container {
+  flex: 0 0 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  overflow-y: auto;
+  border-right: 1px solid var(--border-color);
+  padding-right: 1rem;
+}
+
+.mini-cal-month {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-top: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.mini-cal-day {
+  font-size: 0.85rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid transparent;
+  transition: all var(--transition-fast);
+}
+
+.mini-cal-day.active {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--color-primary);
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.mini-cal-day.highlight {
+  background: rgba(245, 158, 11, 0.2);
+  color: #fbbf24;
+  border-color: #f59e0b;
+}
+
 .calendar-picker-container {
   max-width: 450px;
   margin: 0 auto;
@@ -1623,4 +1675,9 @@ input[type="text"]:focus + .input-icon, input[type="password"]:focus + .input-ic
   background-color: var(--hm-100);
   border-color: var(--hm-100);
   box-shadow: 0 0 4px rgba(16, 185, 129, 0.2);
+}
+.time-slot.heat-max {
+  background-color: #f59e0b; /* Yellow/Amber for perfect match */
+  border-color: #fbbf24;
+  box-shadow: 0 0 8px rgba(245, 158, 11, 0.4);
 }
