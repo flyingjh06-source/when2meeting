@@ -253,58 +253,62 @@ async function signInUser() {
 }
 
 function renderUserCalendarGrid() {
-  const grid = document.getElementById('availability-calendar-grid');
-  grid.innerHTML = '';
-
-  // Sort proposed dates chronologically
   const sortedDates = [...eventData.dates].sort();
-
-  sortedDates.forEach((dateStr, index) => {
-    const dateObj = new Date(dateStr);
+  
+  renderEventCalendarLayout('availability-calendar-grid', sortedDates, (dateObj, dateStr) => {
     const dayCell = createDateSlotElement(dateObj, dateStr);
 
     if (userAvailability.has(dateStr)) {
       dayCell.classList.add('active');
     }
 
-    // Drag-to-select handlers
     dayCell.addEventListener('mousedown', (e) => {
       e.preventDefault();
       isDragging = true;
       dragSelectMode = (currentPaintMode === 'available');
-      userDragStartIndex = index;
+      dragStartDate = dateObj;
       userAvailabilitySnapshot = new Set(userAvailability);
-      updateUserSelectionRange(index, index, sortedDates);
+      updateUserSelectionRange(dateObj, dateObj);
     });
 
     dayCell.addEventListener('mouseenter', () => {
       if (isDragging) {
-        updateUserSelectionRange(userDragStartIndex, index, sortedDates);
+        updateUserSelectionRange(dragStartDate, dateObj);
       }
     });
 
-    grid.appendChild(dayCell);
+    return dayCell;
   });
 }
 
-function updateUserSelectionRange(startIdx, endIdx, sortedDates) {
+function updateUserSelectionRange(startD, endD) {
   userAvailability = new Set(userAvailabilitySnapshot);
   
-  const minIdx = Math.min(startIdx, endIdx);
-  const maxIdx = Math.max(startIdx, endIdx);
+  const minDate = startD < endD ? startD : endD;
+  const maxDate = startD > endD ? startD : endD;
   
-  for (let i = minIdx; i <= maxIdx; i++) {
-    const dStr = sortedDates[i];
-    if (dragSelectMode) userAvailability.add(dStr);
-    else userAvailability.delete(dStr);
+  let curr = new Date(minDate);
+  curr.setHours(0,0,0,0);
+  const mMax = new Date(maxDate);
+  mMax.setHours(0,0,0,0);
+  
+  while (curr <= mMax) {
+    const dStr = formatDate(curr);
+    if (eventData.dates.includes(dStr)) {
+      if (dragSelectMode) userAvailability.add(dStr);
+      else userAvailability.delete(dStr);
+    }
+    curr.setDate(curr.getDate() + 1);
   }
   
-  document.querySelectorAll('#availability-calendar-grid .date-slot').forEach(cell => {
+  document.querySelectorAll('#availability-calendar-grid .date-slot:not(.not-candidate)').forEach(cell => {
     const ds = cell.dataset.dateString;
     if (ds) {
       if (userAvailability.has(ds)) cell.classList.add('active');
       else cell.classList.remove('active');
     }
+  });
+}
   });
 }
 
@@ -373,21 +377,20 @@ function showSaveStatus(type, message) {
 // HEAT MAP & GROUP GRAPHICS
 // -------------------------------------------------------------
 function renderGroupHeatmap() {
-  const grid = document.getElementById('group-heatmap-grid');
-  grid.innerHTML = '';
-
   const sortedDates = [...eventData.dates].sort();
   const totalParticipants = groupAvailability.length;
 
-  sortedDates.forEach(dateStr => {
-    const dateObj = new Date(dateStr);
+  renderEventCalendarLayout('group-heatmap-grid', sortedDates, (dateObj, dateStr) => {
     const cell = createDateSlotElement(dateObj, dateStr);
     
-    // Calculate how many people are available
     const availableUsers = groupAvailability.filter(avail => avail.available_dates.includes(dateStr));
     const availableCount = availableUsers.length;
     
-    // Map count to heatmap shading classes (0 to 5)
+    const countEl = document.createElement('div');
+    countEl.className = 'slot-count';
+    countEl.textContent = `${availableCount}명`;
+    cell.appendChild(countEl);
+
     let cellClassIndex = 0;
     if (totalParticipants > 0 && availableCount > 0) {
       const percentage = availableCount / totalParticipants;
@@ -402,16 +405,10 @@ function renderGroupHeatmap() {
     cell.dataset.availableCount = availableCount;
     cell.dataset.dateString = dateStr;
 
-    // Hover tooltip events
-    cell.addEventListener('mouseenter', (e) => {
-      showTooltip(cell, dateStr, availableUsers);
-    });
+    cell.addEventListener('mouseenter', () => showTooltip(cell, dateStr, availableUsers));
+    cell.addEventListener('mouseleave', () => hideTooltip());
 
-    cell.addEventListener('mouseleave', () => {
-      hideTooltip();
-    });
-
-    grid.appendChild(cell);
+    return cell;
   });
 }
 
@@ -699,30 +696,96 @@ function showToast() {
   }, 2000);
 }
 
+
+// -------------------------------------------------------------
+// REUSABLE EVENT CALENDAR LAYOUT GENERATOR
+// -------------------------------------------------------------
+function renderEventCalendarLayout(containerId, candidateDates, createCellCallback) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
+  
+  if (!candidateDates || candidateDates.length === 0) return;
+
+  const sortedDates = [...candidateDates].sort();
+  const minDate = new Date(sortedDates[0]);
+  const maxDate = new Date(sortedDates[sortedDates.length - 1]);
+
+  let currYear = minDate.getFullYear();
+  let currMonth = minDate.getMonth();
+  const endYear = maxDate.getFullYear();
+  const endMonth = maxDate.getMonth();
+
+  while (currYear < endYear || (currYear === endYear && currMonth <= endMonth)) {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'event-month-wrapper';
+
+    const title = document.createElement('div');
+    title.className = 'event-month-title';
+    title.textContent = `${currYear}년 ${currMonth + 1}월`;
+    wrapper.appendChild(title);
+
+    const header = document.createElement('div');
+    header.className = 'event-weekday-header';
+    ['일', '월', '화', '수', '목', '금', '토'].forEach(day => {
+      const d = document.createElement('div');
+      d.textContent = day;
+      header.appendChild(d);
+    });
+    wrapper.appendChild(header);
+
+    const grid = document.createElement('div');
+    grid.className = 'custom-calendar-grid';
+
+    const firstDayIndex = new Date(currYear, currMonth, 1).getDay();
+    const totalDays = new Date(currYear, currMonth + 1, 0).getDate();
+
+    for (let i = 0; i < firstDayIndex; i++) {
+      const empty = document.createElement('div');
+      empty.className = 'date-slot not-candidate';
+      grid.appendChild(empty);
+    }
+
+    for (let day = 1; day <= totalDays; day++) {
+      const cellDate = new Date(currYear, currMonth, day);
+      const dateStr = formatDate(cellDate);
+      
+      if (candidateDates.includes(dateStr)) {
+        const cell = createCellCallback(cellDate, dateStr);
+        grid.appendChild(cell);
+      } else {
+        const cell = document.createElement('div');
+        cell.className = 'date-slot not-candidate';
+        const dayEl = document.createElement('div');
+        dayEl.className = 'slot-day';
+        dayEl.textContent = day;
+        cell.appendChild(dayEl);
+        grid.appendChild(cell);
+      }
+    }
+
+    wrapper.appendChild(grid);
+    container.appendChild(wrapper);
+
+    currMonth++;
+    if (currMonth > 11) {
+      currMonth = 0;
+      currYear++;
+    }
+  }
+}
+
+
 // Create single date slot grid node
 function createDateSlotElement(dateObj, dateStr) {
-  const monthsKo = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
-  const daysKo = ['일', '월', '화', '수', '목', '금', '토'];
-
   const slot = document.createElement('div');
   slot.className = 'date-slot';
   slot.dataset.dateString = dateStr;
   
-  const monthEl = document.createElement('div');
-  monthEl.className = 'slot-month';
-  monthEl.textContent = monthsKo[dateObj.getMonth()];
-
   const dayEl = document.createElement('div');
   dayEl.className = 'slot-day';
   dayEl.textContent = dateObj.getDate();
 
-  const weekdayEl = document.createElement('div');
-  weekdayEl.className = 'slot-weekday';
-  weekdayEl.textContent = `(${daysKo[dateObj.getDay()]})`;
-
-  slot.appendChild(monthEl);
   slot.appendChild(dayEl);
-  slot.appendChild(weekdayEl);
 
   return slot;
 }
