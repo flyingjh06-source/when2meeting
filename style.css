@@ -1105,3 +1105,144 @@ input[type="text"]:focus + .input-icon, input[type="password"]:focus + .input-ic
     font-size: 0.95rem;
   }
 }
+
+/* ==========================================================================
+   DESKTOP SPLIT LAYOUT
+   ========================================================================== */
+
+.split-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  height: auto;
+}
+
+.left-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.right-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+.logo-link-small {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  margin-right: auto;
+}
+.logo-link-small .logo {
+  font-size: 1.25rem;
+}
+.logo-link-small .logo-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.event-info {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+
+@media (min-width: 900px) {
+  .app-container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+    box-sizing: border-box;
+    max-width: 1600px; /* Use more space if available */
+  }
+
+  .app-main {
+    flex: 1;
+    overflow: hidden; /* Main container has no scroll */
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .event-layout {
+    flex: 1;
+    overflow: hidden;
+  }
+  
+  .view-section {
+    height: 100%;
+  }
+
+  .split-layout {
+    flex-direction: row;
+    height: 100%;
+    align-items: stretch;
+    gap: 2rem;
+  }
+  
+  .left-panel {
+    flex: 0 0 35%; /* Fixed ~1/3 width */
+    max-width: 450px;
+    min-width: 320px;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+  }
+  
+  .right-panel {
+    flex: 1; /* Takes remaining 2/3 space */
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .right-panel .panel-card {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .group-content-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: center; 
+    justify-content: center;
+  }
+
+  .logo-link-small {
+    display: block;
+    margin-right: 1.5rem;
+    flex-shrink: 0;
+  }
+  
+  .event-info {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 1rem;
+  }
+  
+  .event-banner h1 {
+    display: none;
+  }
+
+  /* Make sure calendar fits */
+  .custom-calendar-container {
+    max-width: none;
+    width: fit-content;
+  }
+  
+  /* Prevent scrollbars in desktop split view panels */
+  .left-panel::-webkit-scrollbar, .right-panel::-webkit-scrollbar {
+    width: 6px;
+  }
+  .left-panel::-webkit-scrollbar-thumb, .right-panel::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+  }
+}
