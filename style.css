@@ -452,6 +452,10 @@ input[type="text"]:focus + .input-icon, input[type="password"]:focus + .input-ic
   gap: 1rem;
 }
 
+.selection-actions button {
+  flex: 1;
+}
+
 /* Helper to prevent text selection during dragging */
 .no-select {
   user-select: none;
@@ -1319,12 +1323,12 @@ input[type="text"]:focus + .input-icon, input[type="password"]:focus + .input-ic
 @media (min-width: 900px) {
   #creation-view.creation-split {
     flex-direction: row;
-    max-width: 1000px;
+    max-width: 1200px;
     align-items: stretch;
     padding: 2.5rem 3rem !important;
   }
   .creation-left {
-    flex: 0 0 320px;
+    flex: 0 0 380px;
     padding-right: 2rem;
     border-right: 1px solid var(--border-color);
   }
