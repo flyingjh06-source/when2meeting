@@ -63,9 +63,11 @@
   padding: 0;
 }
 
-html, body {
-  overflow: hidden;
-  height: 100vh;
+@media (min-width: 900px) {
+  html, body {
+    overflow: hidden;
+    height: 100vh;
+  }
 }
 
 body {
