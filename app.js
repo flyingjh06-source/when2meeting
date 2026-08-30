@@ -81,7 +81,10 @@ async function loadEventData(eventId) {
     await fetchGroupAvailability(eventId);
 
     // 3. Render Event Page details
-    document.getElementById('display-event-title').textContent = eventData.title;
+    document.getElementById('event-title').textContent = eventData.title;
+    const titleText = eventData.mode === 'datetime' ? '내 가능한 시간 등록' : '내 가능한 날짜 등록';
+    const userTitle = document.getElementById('user-panel-title');
+    if (userTitle) userTitle.textContent = titleText;
     
     // Copyable URL setup
     const shareUrlInput = document.getElementById('share-url-input');
@@ -478,21 +481,7 @@ async function signInUser() {
   }
 
   // === CRITICAL: Transition the UI after sign-in ===
-  // Hide login form
-  const loginContainer = document.getElementById('login-form-container');
-  if (loginContainer) loginContainer.classList.add('hidden');
-  // Show logged-in menu
-  const loggedMenu = document.getElementById('logged-in-menu-container');
-  if (loggedMenu) loggedMenu.classList.remove('hidden');
-  // Make sure group results view is visible
-  const groupView = document.getElementById('group-results-view');
-  if (groupView) groupView.classList.remove('hidden');
-  // Make sure participant sidebar is visible
-  const sidebar = document.getElementById('participant-sidebar');
-  if (sidebar) sidebar.classList.remove('hidden');
-  // Hide back button (we are in main view)
-  const backBtn = document.getElementById('back-to-main-container');
-  if (backBtn) backBtn.classList.add('hidden');
+  showUserInputView();
 
   if (eventData.mode === 'datetime') {
     document.querySelector('#user-input-grid-wrapper').classList.add('hidden');
@@ -1258,17 +1247,56 @@ function renderMiniCalendar(containerId, activeDates) {
     const mLabel = document.createElement('div');
     mLabel.className = 'mini-cal-month';
     mLabel.textContent = month;
+    mLabel.style.fontWeight = 'bold';
+    mLabel.style.marginBottom = '0.5rem';
+    mLabel.style.marginTop = '0.5rem';
     container.appendChild(mLabel);
     
-    datesByMonth[month].forEach(dStr => {
-      const d = new Date(dStr);
-      const el = document.createElement('div');
-      el.className = 'mini-cal-day active';
-      const daysKo = ['일','월','화','수','목','금','토'];
-      el.textContent = `${d.getDate()}일 (${daysKo[d.getDay()]})`;
-      el.dataset.date = dStr;
-      container.appendChild(el);
+    const calGrid = document.createElement('div');
+    calGrid.style.display = 'grid';
+    calGrid.style.gridTemplateColumns = 'repeat(7, 1fr)';
+    calGrid.style.gap = '2px';
+    calGrid.style.textAlign = 'center';
+    
+    const daysKo = ['일','월','화','수','목','금','토'];
+    daysKo.forEach(day => {
+      const dayHeader = document.createElement('div');
+      dayHeader.textContent = day;
+      dayHeader.style.fontSize = '0.75rem';
+      dayHeader.style.color = 'var(--text-secondary)';
+      dayHeader.style.padding = '2px 0';
+      calGrid.appendChild(dayHeader);
     });
+    
+    const firstDate = new Date(datesByMonth[month][0]);
+    const year = firstDate.getFullYear();
+    const monthIdx = firstDate.getMonth();
+    const firstDayIndex = new Date(year, monthIdx, 1).getDay();
+    const totalDays = new Date(year, monthIdx + 1, 0).getDate();
+    
+    const activeDatesSet = new Set(datesByMonth[month]);
+    
+    for (let i = 0; i < firstDayIndex; i++) {
+      calGrid.appendChild(document.createElement('div'));
+    }
+    
+    for (let i = 1; i <= totalDays; i++) {
+      const dStr = `${year}-${String(monthIdx + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+      const el = document.createElement('div');
+      el.textContent = i;
+      el.style.padding = '0.4rem 0';
+      el.style.fontSize = '0.85rem';
+      el.style.borderRadius = 'var(--radius-sm)';
+      
+      if (activeDatesSet.has(dStr)) {
+        el.className = 'mini-cal-day active';
+        el.dataset.date = dStr;
+      } else {
+        el.style.color = 'var(--text-disabled, #666)';
+      }
+      calGrid.appendChild(el);
+    }
+    container.appendChild(calGrid);
   }
 }
 
