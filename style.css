@@ -63,13 +63,17 @@
   padding: 0;
 }
 
+html, body {
+  overflow: hidden;
+  height: 100vh;
+}
+
 body {
   background-color: var(--bg-base);
   color: var(--text-primary);
   font-family: var(--font-body);
   min-height: 100vh;
   position: relative;
-  overflow-x: hidden;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
 }
@@ -1318,7 +1322,7 @@ input[type="text"]:focus + .input-icon, input[type="password"]:focus + .input-ic
   padding: 1.5rem 2rem !important;
   margin: auto !important;
   max-height: 95vh;
-  overflow-y: auto;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
 }
