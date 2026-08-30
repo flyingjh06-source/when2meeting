@@ -1207,12 +1207,14 @@ input[type="text"]:focus + .input-icon, input[type="password"]:focus + .input-ic
     overflow-y: hidden;
     display: flex;
     flex-direction: column;
+    min-height: 0;
   }
 
   .right-panel .panel-card {
     flex: 1;
     display: flex;
     flex-direction: column;
+    min-height: 0;
   }
   
   .group-content-wrapper {
@@ -1223,6 +1225,7 @@ input[type="text"]:focus + .input-icon, input[type="password"]:focus + .input-ic
     justify-content: center;
     overflow-y: auto;
     padding-bottom: 2rem;
+    min-height: 0;
   }
 
   .logo-link-small {
@@ -1262,6 +1265,7 @@ input[type="text"]:focus + .input-icon, input[type="password"]:focus + .input-ic
   flex: 1;
   display: flex;
   flex-direction: column;
+  min-height: 0;
 }
 .app-main {
   display: block; /* Remove flex to avoid squishing and centering issues */
