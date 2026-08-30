@@ -21,6 +21,7 @@ let pickerCurrentDate = new Date();
 let isDragging = false;
 let dragSelectMode = true; // true = selecting, false = deselecting
 let dragStartDate = null;
+let dragStartSlotKey = null;
 let selectedDatesSnapshot = null;
 
 let userDragStartIndex = -1;
@@ -68,8 +69,10 @@ function initRouter() {
 // -------------------------------------------------------------
 async function loadEventData(eventId) {
   try {
-    // 1. Fetch Event Details
-    const eventRes = await fetch(`${API_BASE}/events/${eventId}`);
+    const eventPromise = fetch(`${API_BASE}/events/${eventId}`);
+    const availPromise = fetchGroupAvailability(eventId);
+    
+    const eventRes = await eventPromise;
     if (!eventRes.ok) {
       alert('모임을 찾을 수 없습니다. 메인 페이지로 이동합니다.');
       window.location.href = '/';
@@ -77,8 +80,7 @@ async function loadEventData(eventId) {
     }
     eventData = await eventRes.json();
     
-    // 2. Fetch Group Availability
-    await fetchGroupAvailability(eventId);
+    await availPromise;
 
     // 3. Render Event Page details
     document.getElementById('event-title').textContent = eventData.title;
@@ -560,43 +562,53 @@ function updateUserSelectionRange(startD, endD) {
   });
 }
 
-async function saveUserAvailability() {
+function saveUserAvailability() {
   if (!activeUser.name) return;
   
   showSaveStatus('saving', '저장하는 중...');
   
-  try {
-    const res = await fetch(`${API_BASE}/events/${eventData.id}/availability`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        name: activeUser.name,
-        password: activeUser.password,
-        available_dates: [...userAvailability]
-      })
+  // Optimistically update group data
+  const userRecord = groupAvailability.find(a => a.name === activeUser.name);
+  if (userRecord) {
+    userRecord.available_dates = [...userAvailability];
+  } else {
+    groupAvailability.push({
+      name: activeUser.name,
+      available_dates: [...userAvailability]
     });
-
+  }
+  
+  if (eventData.mode === 'datetime') {
+    renderDatetimeGroupGrid();
+  } else {
+    renderGroupHeatmap();
+  }
+  renderParticipantList();
+  
+  fetch(`${API_BASE}/events/${eventData.id}/availability`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      name: activeUser.name,
+      password: activeUser.password,
+      available_dates: [...userAvailability]
+    })
+  })
+  .then(res => {
     if (res.status === 401) {
       showSaveStatus('error', '저장 실패: 비밀번호 불일치');
       alert('해당 이름으로 등록된 일정의 비밀번호와 다릅니다.');
       return;
     }
-
     if (!res.ok) throw new Error();
-
+    
     showSaveStatus('success', '모든 변경 사항이 저장되었습니다.');
-    
-    // Cache sign-in details
     sessionStorage.setItem(`when2meeting_${eventData.id}`, JSON.stringify(activeUser));
-    
-    // Refresh group data
-    await fetchGroupAvailability(eventData.id);
-    renderGroupHeatmap();
-    renderParticipantList();
-  } catch (e) {
+  })
+  .catch(e => {
     console.error(e);
     showSaveStatus('error', '저장 오류: 다시 시도해 주세요.');
-  }
+  });
 }
 
 function showSaveStatus(type, message) {
@@ -832,7 +844,9 @@ function setupEventListeners() {
     if (isDatetime) {
       const slotKey = cell.dataset.key;
       dragSelectMode = !userAvailability.has(slotKey);
-      toggleDatetimeSlot(cell, slotKey, dragSelectMode);
+      dragStartSlotKey = slotKey;
+      userAvailabilitySnapshot = new Set(userAvailability);
+      updateDatetimeSelectionRange(slotKey, slotKey);
       return;
     }
 
@@ -869,7 +883,7 @@ function setupEventListeners() {
 
     if (isDatetime) {
       const slotKey = cell.dataset.key;
-      toggleDatetimeSlot(cell, slotKey, dragSelectMode);
+      updateDatetimeSelectionRange(dragStartSlotKey, slotKey);
       return;
     }
 
@@ -1453,12 +1467,14 @@ function renderDatetimeUserGrid() {
         e.preventDefault();
         isDragging = true;
         dragSelectMode = !userAvailability.has(slotKey);
-        toggleDatetimeSlot(cell, slotKey, dragSelectMode);
+        dragStartSlotKey = slotKey;
+        userAvailabilitySnapshot = new Set(userAvailability);
+        updateDatetimeSelectionRange(slotKey, slotKey);
       });
 
       cell.addEventListener('mouseenter', (e) => {
         if (isDragging) {
-          toggleDatetimeSlot(cell, slotKey, dragSelectMode);
+          updateDatetimeSelectionRange(dragStartSlotKey, slotKey);
         }
         document.querySelectorAll('#mini-calendar-user .mini-cal-day').forEach(el => {
           if (el.dataset.date === d) el.classList.add('highlight');
@@ -1485,4 +1501,41 @@ function toggleDatetimeSlot(cell, slotKey, add) {
     userAvailability.delete(slotKey);
     cell.classList.remove('available');
   }
+}
+
+function updateDatetimeSelectionRange(startKey, endKey) {
+  userAvailability = new Set(userAvailabilitySnapshot);
+  
+  const [startD, startT] = startKey.split('T');
+  const [endD, endT] = endKey.split('T');
+  
+  const dates = [...eventData.dates].sort();
+  const timeSlots = generateTimeSlots(eventData.time_start || '09:00', eventData.time_end || '22:00');
+  
+  const dIdx1 = dates.indexOf(startD);
+  const dIdx2 = dates.indexOf(endD);
+  const tIdx1 = timeSlots.indexOf(startT);
+  const tIdx2 = timeSlots.indexOf(endT);
+  
+  if (dIdx1 === -1 || dIdx2 === -1 || tIdx1 === -1 || tIdx2 === -1) return;
+  
+  const minD = Math.min(dIdx1, dIdx2);
+  const maxD = Math.max(dIdx1, dIdx2);
+  const minT = Math.min(tIdx1, tIdx2);
+  const maxT = Math.max(tIdx1, tIdx2);
+  
+  for (let i = minD; i <= maxD; i++) {
+    for (let j = minT; j <= maxT; j++) {
+      const key = `${dates[i]}T${timeSlots[j]}`;
+      if (dragSelectMode) userAvailability.add(key);
+      else userAvailability.delete(key);
+    }
+  }
+  
+  const cells = document.querySelectorAll('#datetime-user-grid .time-slot');
+  cells.forEach(cell => {
+    const k = cell.dataset.key;
+    if (userAvailability.has(k)) cell.classList.add('available');
+    else cell.classList.remove('available');
+  });
 }
