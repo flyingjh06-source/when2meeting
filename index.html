@@ -137,13 +137,23 @@
 
               <div class="calendar-instructions">
                 <i data-lucide="info" class="info-icon"></i>
-                <span>가능한 날짜는 <strong>초록색</strong>으로 칠해집니다. 드래그하여 토글할 수 있습니다.</span>
+                <span>모드를 선택하고 드래그하여 날짜를 입력하세요.</span>
               </div>
 
-              <!-- Selection helpers -->
-              <div class="helper-buttons">
-                <button id="select-all-btn" class="btn btn-mini-primary">모든 날짜 선택</button>
-                <button id="deselect-all-btn" class="btn btn-mini-secondary">모두 해제</button>
+              <!-- Paint Mode Toggle & Selection helpers -->
+              <div class="paint-mode-container">
+                <div class="paint-mode-toggle">
+                  <button id="mode-available-btn" class="mode-btn active">
+                    <i data-lucide="check" class="btn-icon"></i> 가능 모드
+                  </button>
+                  <button id="mode-unavailable-btn" class="mode-btn">
+                    <i data-lucide="x" class="btn-icon"></i> 불가능 모드
+                  </button>
+                </div>
+                <div class="helper-buttons">
+                  <button id="select-all-btn" class="btn btn-mini-primary">모두 가능</button>
+                  <button id="deselect-all-btn" class="btn btn-mini-secondary">모두 해제</button>
+                </div>
               </div>
 
               <div class="custom-calendar-container">
