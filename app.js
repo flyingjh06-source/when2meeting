@@ -7,7 +7,6 @@ let eventData = null;         // For the active event
 let groupAvailability = [];   // All participants' availabilities
 let selectedDates = new Set(); // For creation calendar ("YYYY-MM-DD")
 let userAvailability = new Set(); // For active user availability ("YYYY-MM-DD")
-let currentPaintMode = 'available'; // 'available' or 'unavailable'
 
 // Active User
 let activeUser = {
@@ -120,20 +119,21 @@ async function fetchGroupAvailability(eventId) {
 // CREATOR DATE PICKER CALENDAR (Landing Page)
 // -------------------------------------------------------------
 function initCreationCalendar() {
-  document.getElementById('prev-month-btn').addEventListener('click', () => {
-    pickerCurrentDate.setMonth(pickerCurrentDate.getMonth() - 1);
-    renderPickerCalendar();
-  });
-
-  document.getElementById('next-month-btn').addEventListener('click', () => {
-    pickerCurrentDate.setMonth(pickerCurrentDate.getMonth() + 1);
-    renderPickerCalendar();
-  });
+  const btnPrev = document.getElementById('prev-month-btn');
+  const btnNext = document.getElementById('next-month-btn');
+  
+  if (btnPrev) btnPrev.addEventListener('click', () => changePickerMonth(-1));
+  if (btnNext) btnNext.addEventListener('click', () => changePickerMonth(1));
 
   document.getElementById('clear-selected-btn').addEventListener('click', () => {
     selectedDates.clear();
     renderPickerCalendar();
   });
+}
+
+function changePickerMonth(delta) {
+  pickerCurrentDate.setMonth(pickerCurrentDate.getMonth() + delta);
+  renderPickerCalendar();
 }
 
 function renderPickerCalendar() {
@@ -244,7 +244,7 @@ function showMainEventView() {
 }
 
 function showUserInputView() {
-  document.getElementById('main-heatmap-view').classList.add('hidden');
+  document.getElementById('main-heatmap-view').classList.hidden = true;
   document.getElementById('user-input-view').classList.remove('hidden');
 }
 
@@ -288,7 +288,7 @@ function renderUserCalendarGrid() {
     dayCell.addEventListener('mousedown', (e) => {
       e.preventDefault();
       isDragging = true;
-      dragSelectMode = (currentPaintMode === 'available');
+      dragSelectMode = !userAvailability.has(dateStr);
       dragStartDate = dateObj;
       userAvailabilitySnapshot = new Set(userAvailability);
       updateUserSelectionRange(dateObj, dateObj);
@@ -504,10 +504,8 @@ function showTooltip(cell, dateStr, availableUsers) {
 }
 
 function hideTooltip() {
-  // We keep it visible or hide, standard behavior is hide when leaving heatmap grid entirely or hide immediately.
-  // Actually, keeping it open at the last hovered date is nice, but let's hide it or let it fade.
-  // Let's keep it visible so users can read it comfortably, or hide it on leaving.
-  // To make it look extremely premium, we hide it only if we're not hovering any slot.
+  const tooltip = document.getElementById('date-tooltip-card');
+  if (tooltip) tooltip.classList.add('hidden');
 }
 
 function renderParticipantList() {
@@ -541,8 +539,6 @@ function renderParticipantList() {
     item.appendChild(icon);
     item.appendChild(span);
 
-    // Interactive Hover Highlighting:
-    // Hovering a participant highlights their specific dates on the main heatmap
     item.addEventListener('mouseenter', () => {
       const heatmapGrid = document.getElementById('group-heatmap-grid');
       heatmapGrid.classList.add('highlighting');
@@ -577,7 +573,67 @@ function renderParticipantList() {
 // -------------------------------------------------------------
 function setupEventListeners() {
   // Global drag stop
-  document.addEventListener('mouseup', () => {
+  window.addEventListener('mouseup', () => {
+    if (isDragging) {
+      isDragging = false;
+      if (currentView === 'event') {
+        saveUserAvailability();
+      }
+    }
+  });
+
+  // Mobile Touch Drag Support
+  window.addEventListener('touchstart', (e) => {
+    const target = e.target;
+    const cell = target.closest('.calendar-day, .date-slot');
+    if (!cell) return;
+    if (cell.classList.contains('empty') || cell.classList.contains('not-candidate')) return;
+    
+    e.preventDefault();
+    isDragging = true;
+    
+    const isCreation = cell.classList.contains('calendar-day');
+    const dateStr = isCreation ? cell.dataset.date : cell.dataset.dateString;
+    const parts = dateStr.split('-');
+    const cellDate = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+    
+    dragStartDate = cellDate;
+    if (isCreation) {
+      dragSelectMode = !selectedDates.has(dateStr);
+      selectedDatesSnapshot = new Set(selectedDates);
+      updatePickerSelectionRange(cellDate, cellDate);
+    } else {
+      dragSelectMode = !userAvailability.has(dateStr);
+      userAvailabilitySnapshot = new Set(userAvailability);
+      updateUserSelectionRange(cellDate, cellDate);
+    }
+  }, { passive: false });
+
+  window.addEventListener('touchmove', (e) => {
+    if (!isDragging) return;
+    e.preventDefault();
+    
+    const touch = e.touches[0];
+    const target = document.elementFromPoint(touch.clientX, touch.clientY);
+    if (!target) return;
+    
+    const cell = target.closest('.calendar-day, .date-slot');
+    if (!cell) return;
+    if (cell.classList.contains('empty') || cell.classList.contains('not-candidate')) return;
+    
+    const isCreation = cell.classList.contains('calendar-day');
+    const dateStr = isCreation ? cell.dataset.date : cell.dataset.dateString;
+    const parts = dateStr.split('-');
+    const cellDate = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+    
+    if (isCreation) {
+      updatePickerSelectionRange(dragStartDate, cellDate);
+    } else {
+      updateUserSelectionRange(dragStartDate, cellDate);
+    }
+  }, { passive: false });
+
+  window.addEventListener('touchend', () => {
     if (isDragging) {
       isDragging = false;
       if (currentView === 'event') {
