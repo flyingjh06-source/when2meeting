@@ -240,26 +240,39 @@ function updatePickerSelectionRange(startD, endD) {
 // -------------------------------------------------------------
 function showMainEventView() {
   document.getElementById('user-input-view').classList.add('hidden');
-  document.getElementById('main-heatmap-view').classList.remove('hidden');
+  document.getElementById('group-results-view').classList.remove('hidden');
+  
+  document.getElementById('back-to-main-container').classList.add('hidden');
+  document.getElementById('participant-sidebar').classList.remove('hidden');
+
+  if (activeUser.name) {
+    document.getElementById('login-form-container').classList.add('hidden');
+    document.getElementById('logged-in-menu-container').classList.remove('hidden');
+  } else {
+    document.getElementById('login-form-container').classList.remove('hidden');
+    document.getElementById('logged-in-menu-container').classList.add('hidden');
+  }
+
   const mainHeader = document.getElementById('main-app-header');
   if (mainHeader) mainHeader.classList.add('hidden');
 }
 
 function showUserInputView() {
-  document.getElementById('main-heatmap-view').classList.add('hidden');
+  document.getElementById('group-results-view').classList.add('hidden');
   document.getElementById('user-input-view').classList.remove('hidden');
+  
+  document.getElementById('login-form-container').classList.add('hidden');
+  document.getElementById('logged-in-menu-container').classList.add('hidden');
+  document.getElementById('participant-sidebar').classList.add('hidden');
+  document.getElementById('back-to-main-container').classList.remove('hidden');
 }
 
 function showSignInForm() {
-  document.getElementById('signin-section').classList.remove('hidden');
-  document.getElementById('goto-input-section').classList.add('hidden');
+  activeUser = { name: '', password: '' };
   showMainEventView();
 }
 
 async function signInUser() {
-  document.getElementById('signin-section').classList.add('hidden');
-  document.getElementById('goto-input-section').classList.remove('hidden');
-  
   document.getElementById('active-user-name').textContent = activeUser.name;
   document.getElementById('active-user-name-main').textContent = activeUser.name;
   
