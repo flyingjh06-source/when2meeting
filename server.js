@@ -73,6 +73,10 @@ async function initDb() {
   try { await dbRun("ALTER TABLE events ADD COLUMN time_start TEXT"); } catch (e) {}
   try { await dbRun("ALTER TABLE events ADD COLUMN time_end TEXT"); } catch (e) {}
   try { await dbRun("ALTER TABLE events ADD COLUMN date_mode TEXT DEFAULT 'specific'"); } catch (e) {}
+  try { await dbRun("ALTER TABLE events ADD COLUMN created_at TEXT"); } catch (e) {}
+  
+  // Initialize created_at for existing events
+  await dbRun("UPDATE events SET created_at = ? WHERE created_at IS NULL", [new Date().toISOString()]);
   await dbRun(`
     CREATE TABLE IF NOT EXISTS availabilities (
       event_id TEXT NOT NULL,
@@ -114,7 +118,7 @@ app.post('/api/events', async (req, res) => {
     const candidateId = generateShortId();
     const existing = await dbGet('SELECT id FROM events WHERE id = ?', [candidateId]);
     const finalId = existing ? generateShortId() + generateShortId().slice(0, 2) : candidateId;
-    await dbRun('INSERT INTO events (id, title, dates, mode, time_start, time_end, date_mode) VALUES (?, ?, ?, ?, ?, ?, ?)', [
+    await dbRun('INSERT INTO events (id, title, dates, mode, time_start, time_end, date_mode, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [
       finalId,
       title,
       JSON.stringify(dates),
@@ -122,6 +126,7 @@ app.post('/api/events', async (req, res) => {
       time_start,
       time_end,
       date_mode,
+      new Date().toISOString(),
     ]);
     res.status(201).json({ id: finalId });
   } catch (err) {
@@ -206,8 +211,25 @@ app.get('*', (req, res, next) => {
 });
 
 // ─── Start ───────────────────────────────────────────────────────────────────
+async function cleanupOldEvents() {
+  try {
+    const oneYearAgo = new Date(Date.now() - 365 * 24 * 60 * 60 * 1000).toISOString();
+    // Delete availabilities of old events
+    await dbRun("DELETE FROM availabilities WHERE event_id IN (SELECT id FROM events WHERE created_at < ?)", [oneYearAgo]);
+    // Delete old events
+    await dbRun("DELETE FROM events WHERE created_at < ?", [oneYearAgo]);
+  } catch (err) {
+    console.error('Failed to clean up old events:', err);
+  }
+}
+
+// Run cleanup every 24 hours
+setInterval(cleanupOldEvents, 24 * 60 * 60 * 1000);
+
 async function main() {
   await initDb();
+  // Run an initial cleanup on startup
+  await cleanupOldEvents();
   app.listen(PORT, '0.0.0.0', () => {
     console.log('==================================================');
     console.log('when2meeting server is running!');
