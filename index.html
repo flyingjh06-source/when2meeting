@@ -166,10 +166,10 @@
             <div class="panel-card glass-panel" id="group-results-panel" style="flex:1;">
               
               <!-- COMBINED HEADER: Title + Tooltip -->
-              <div class="panel-header" style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border-color);">
+              <div class="panel-header" style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1.5rem; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border-color);">
                 
                 <!-- Left: Title and Copy Button -->
-                <div class="event-info" style="flex: 1;">
+                <div class="event-info" style="flex-shrink: 0; min-width: max-content;">
                   <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
                     <h1 id="display-event-title" style="margin: 0; font-family: var(--font-header); font-size: 1.75rem;">모임 로딩 중...</h1>
                     <button id="copy-url-btn" class="btn btn-copy" title="링크 복사" style="padding: 0.4rem 0.75rem; font-size: 0.85rem;">
@@ -181,7 +181,7 @@
                 </div>
                 
                 <!-- Right: Interactive Tooltip Card -->
-                <div id="date-tooltip-card" class="tooltip-card hide-scrollbar" style="margin-top: 0; padding: 0.75rem 1.25rem; width: 100%; max-width: 700px; height: 75px; display: flex; flex-direction: row; justify-content: center; align-items: center; overflow: hidden; gap: 1rem;">
+                <div id="date-tooltip-card" class="tooltip-card hide-scrollbar" style="margin-top: 0; padding: 0.75rem 1.25rem; flex: 1; max-width: 700px; height: 75px; display: flex; flex-direction: row; justify-content: center; align-items: center; overflow: hidden; gap: 1rem;">
                   <div id="tooltip-placeholder" style="color: var(--text-muted); text-align: center; font-size: 0.95rem; display: flex; align-items: center; gap: 0.75rem;">
                     <i data-lucide="mouse-pointer-click" style="width: 1.2rem; height: 1.2rem; opacity: 0.5;"></i>
                     달력의 날짜에 마우스를 올려 상세 참석자 정보를 확인하세요.
