@@ -519,18 +519,60 @@ input[type="text"]:focus + .input-icon, input[type="password"]:focus + .input-ic
   padding: 0.5rem 0.5rem;
   border-radius: var(--radius-sm);
   border: 1px solid var(--border-color);
-  background: var(--bg-surface);
+  background: var(--bg-input);
   color: var(--text-primary);
-  font-family: var(--font-body);
-  font-size: 0.85rem;
-  cursor: pointer;
-  appearance: auto;
+  font-family: inherit;
+  font-size: 0.95rem;
+  transition: all var(--transition-fast);
+  appearance: none;
 }
 
 .time-select:focus {
   outline: none;
   border-color: var(--color-primary);
   box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.15);
+}
+
+.custom-select-wrapper {
+  position: relative;
+  flex: 1;
+}
+.custom-select-trigger {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  padding: 0.5rem 0.75rem;
+}
+.custom-select-options {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  max-height: 200px;
+  overflow-y: auto;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  z-index: 100;
+  margin: 0.25rem 0 0 0;
+  padding: 0;
+  list-style: none;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+}
+.custom-select-options li {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.custom-select-options li:hover {
+  background: rgba(255,255,255,0.05);
+}
+.custom-select-options li.selected {
+  background: rgba(16, 185, 129, 0.2);
+  color: var(--color-primary);
+  font-weight: 600;
 }
 
 .time-range-separator {
