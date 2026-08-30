@@ -1447,10 +1447,10 @@ input[type="text"]:focus + .input-icon, input[type="password"]:focus + .input-ic
     padding: 1.25rem 2rem !important;
   }
 }
-#creation-view .card-header { margin-bottom: 0.75rem !important; }
-#creation-view .form-group { margin-bottom: 0.75rem !important; }
+#creation-view .card-header { margin-bottom: 0.5rem !important; }
+#creation-view .form-group { margin-bottom: 0.5rem !important; }
 #creation-view .calendar-nav { margin-bottom: 0.25rem !important; }
-#creation-view .selection-actions { margin-top: 0.75rem !important; }
+#creation-view .selection-actions { margin-top: 0.5rem !important; }
 
 .app-footer {
   padding: 0.5rem 0;
@@ -1486,13 +1486,12 @@ input[type="text"]:focus + .input-icon, input[type="password"]:focus + .input-ic
     flex-direction: row;
     max-width: 1200px;
     align-items: stretch;
-    padding: 2rem 2.5rem !important;
+    padding: 1.5rem 2rem !important;
   }
   .creation-left {
     flex: 0 0 340px;
-    padding-right: 2rem;
+    padding-right: 1.5rem;
     border-right: 1px solid var(--border-color);
-    overflow-y: auto;
   }
   .creation-right {
     flex: 1;
