@@ -1508,7 +1508,11 @@ input[type="text"]:focus + .input-icon, input[type="password"]:focus + .input-ic
   }
 }
 #creation-view .card-header { margin-bottom: 0.25rem !important; }
+#creation-view h2 { margin-bottom: 0.5rem !important; font-size: 1.25rem !important; margin-top: 0 !important; }
 #creation-view .form-group { margin-bottom: 0.5rem !important; }
+#creation-view .form-group label { margin-bottom: 0.25rem !important; font-size: 0.85rem !important; }
+#creation-view .input-control { padding: 0.5rem 0.75rem !important; font-size: 0.9rem !important; }
+#creation-view .btn { padding: 0.6rem 1rem !important; }
 #creation-view .calendar-nav { margin-bottom: 0.25rem !important; }
 #creation-view .selection-actions { margin-top: 0.25rem !important; }
 
@@ -1547,12 +1551,14 @@ input[type="text"]:focus + .input-icon, input[type="password"]:focus + .input-ic
     max-width: 1200px;
     align-items: stretch;
     padding: 1rem 1.5rem !important;
-    height: 500px;
+    min-height: 560px;
+    height: auto;
   }
   .creation-left {
     flex: 0 0 320px;
     padding-right: 1.5rem;
     border-right: 1px solid var(--border-color);
+    overflow-y: auto;
   }
   .creation-right {
     flex: 1;
