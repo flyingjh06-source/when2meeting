@@ -486,35 +486,44 @@ input[type="text"]:focus + .input-icon, input[type="password"]:focus + .input-ic
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  width: 100%;
+  background: rgba(13, 18, 30, 0.5);
+  padding: 0.4rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
 }
 
 .url-label {
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   color: var(--text-secondary);
   font-weight: 600;
+  white-space: nowrap;
+  padding-left: 0.25rem;
 }
 
 #share-url-input {
   flex: 1;
-  min-width: 250px;
-  max-width: 480px;
-  background-color: var(--bg-input);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-sm);
-  padding: 0.5rem 0.75rem 0.5rem 0.75rem;
-  color: var(--text-secondary);
-  font-size: 0.9rem;
+  min-width: 0;
+  background-color: transparent;
+  border: none;
+  padding: 0.25rem;
+  color: var(--text-primary);
+  font-size: 0.85rem;
   font-family: var(--font-body);
+}
+#share-url-input:focus {
+  outline: none;
 }
 
 .btn-copy {
-  padding: 0.5rem 1rem;
-  font-size: 0.9rem;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.85rem;
   background-color: rgba(59, 130, 246, 0.15);
   border: 1px solid rgba(59, 130, 246, 0.3);
   color: var(--color-accent);
   border-radius: var(--radius-sm);
+  white-space: nowrap;
 }
 
 .btn-copy:hover {
