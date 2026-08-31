@@ -55,11 +55,15 @@
   margin: 0;
   padding: 0;
 }
-.page-wrapper {
-  overflow-x: hidden;
-  width: 100%;
-  position: relative;
-  min-height: 100vh;
+.glow-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: -1;
 }
 
 /* Utilities */
@@ -1497,23 +1501,7 @@ input[type="text"]:focus + .input-icon, input[type="password"]:focus + .input-ic
   flex-direction: column;
   min-height: 0;
 }
-.app-main {
-  display: block; /* Remove flex to avoid squishing and centering issues */
-  overflow-y: auto;
-  height: 100%;
-}
-.view-card {
-  margin: 2rem auto; /* Give it space and center horizontally */
-  flex-shrink: 0;
-}
-.app-main {
-  display: flex !important; /* Restore flex */
-  overflow-y: auto !important;
-}
-.view-card {
-  margin: 2rem auto !important;
-  flex-shrink: 0 !important;
-}
+
 
 /* ==========================================================================
    CREATION VIEW COMPACT OVERRIDES (To fit in one screen)
@@ -1598,11 +1586,7 @@ input[type="text"]:focus + .input-icon, input[type="password"]:focus + .input-ic
   flex-shrink: 0;
 }
 
-.app-main {
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: flex-start !important;
-}
+
 
 /* ==========================================================================
    CREATION VIEW SPLIT LAYOUT (Desktop only)
