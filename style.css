@@ -9,14 +9,7 @@
   --bg-surface-solid: #161e31;
   --bg-input: rgba(13, 18, 30, 0.8);
 
-/* Utilities */
-.hide-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-.hide-scrollbar {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
-}
+
   
   --border-color: rgba(255, 255, 255, 0.08);
   --border-glow: rgba(16, 185, 129, 0.2);
@@ -61,6 +54,15 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+/* Utilities */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 }
 
 @media (min-width: 900px) {
@@ -551,7 +553,7 @@ input[type="text"]:focus + .input-icon, input[type="password"]:focus + .input-ic
   right: 0;
   max-height: 200px;
   overflow-y: auto;
-  background: var(--bg-panel);
+  background: var(--bg-surface-solid);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
   z-index: 100;
@@ -589,6 +591,15 @@ input[type="text"]:focus + .input-icon, input[type="password"]:focus + .input-ic
   align-items: center;
   justify-content: center;
   height: 100%;
+}
+
+.dow-picker-container {
+  padding: 0.5rem;
+}
+@media (min-width: 900px) {
+  .dow-picker-container {
+    padding: 2rem;
+  }
 }
 
 .dow-btn {
