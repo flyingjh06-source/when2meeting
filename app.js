@@ -343,6 +343,7 @@ function populateTimeSelectors() {
 }
 
 function changePickerMonth(delta) {
+  pickerCurrentDate.setDate(1); // 방어코드: 31일 등에서 달 넘길 때 다음달로 스킵되는 현상 방지
   pickerCurrentDate.setMonth(pickerCurrentDate.getMonth() + delta);
   renderPickerCalendar();
 }
