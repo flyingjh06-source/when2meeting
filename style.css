@@ -55,9 +55,11 @@
   margin: 0;
   padding: 0;
 }
-html, body {
+.page-wrapper {
   overflow-x: hidden;
   width: 100%;
+  position: relative;
+  min-height: 100vh;
 }
 
 /* Utilities */
@@ -1252,6 +1254,21 @@ input[type="text"]:focus + .input-icon, input[type="password"]:focus + .input-ic
   .app-header {
     padding: 1.25rem 0 0.75rem;
     margin-bottom: 1rem;
+  }
+  
+  #date-tooltip-card {
+    flex-direction: column !important;
+    height: auto !important;
+    padding: 1rem !important;
+  }
+  
+  #tooltip-content {
+    flex-direction: column !important;
+    gap: 1rem !important;
+  }
+  
+  .tooltip-lists {
+    width: 100%;
   }
 
   .logo-text {
