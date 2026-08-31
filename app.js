@@ -1334,68 +1334,115 @@ function renderMiniCalendar(containerId, activeDates) {
   }
   
   const datesByMonth = {};
+  const monthKeys = [];
   activeDates.forEach(dStr => {
     const d = new Date(dStr);
     const monthKey = `${d.getFullYear()}년 ${d.getMonth() + 1}월`;
-    if (!datesByMonth[monthKey]) datesByMonth[monthKey] = [];
+    if (!datesByMonth[monthKey]) {
+      datesByMonth[monthKey] = [];
+      monthKeys.push(monthKey);
+    }
     datesByMonth[monthKey].push(dStr);
   });
   
-  for (const month in datesByMonth) {
-    const mLabel = document.createElement('div');
-    mLabel.className = 'mini-cal-month';
-    mLabel.textContent = month;
-    mLabel.style.fontWeight = 'bold';
-    mLabel.style.marginBottom = '0.5rem';
-    mLabel.style.marginTop = '0.5rem';
-    container.appendChild(mLabel);
-    
-    const calGrid = document.createElement('div');
-    calGrid.style.display = 'grid';
-    calGrid.style.gridTemplateColumns = 'repeat(7, 1fr)';
-    calGrid.style.gap = '2px';
-    calGrid.style.textAlign = 'center';
-    
-    const daysKo = ['일','월','화','수','목','금','토'];
-    daysKo.forEach(day => {
-      const dayHeader = document.createElement('div');
-      dayHeader.textContent = day;
-      dayHeader.style.fontSize = '0.75rem';
-      dayHeader.style.color = 'var(--text-secondary)';
-      dayHeader.style.padding = '2px 0';
-      calGrid.appendChild(dayHeader);
-    });
-    
-    const firstDate = new Date(datesByMonth[month][0]);
-    const year = firstDate.getFullYear();
-    const monthIdx = firstDate.getMonth();
-    const firstDayIndex = new Date(year, monthIdx, 1).getDay();
-    const totalDays = new Date(year, monthIdx + 1, 0).getDate();
-    
-    const activeDatesSet = new Set(datesByMonth[month]);
-    
-    for (let i = 0; i < firstDayIndex; i++) {
-      calGrid.appendChild(document.createElement('div'));
-    }
-    
-    for (let i = 1; i <= totalDays; i++) {
-      const dStr = `${year}-${String(monthIdx + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
-      const el = document.createElement('div');
-      el.textContent = i;
-      el.style.padding = '0.4rem 0';
-      el.style.fontSize = '0.85rem';
-      el.style.borderRadius = 'var(--radius-sm)';
-      
-      if (activeDatesSet.has(dStr)) {
-        el.className = 'mini-cal-day active';
-        el.dataset.date = dStr;
-      } else {
-        el.style.color = 'var(--text-disabled, #666)';
-      }
-      calGrid.appendChild(el);
-    }
-    container.appendChild(calGrid);
+  if (monthKeys.length === 0) return;
+  
+  let monthIndex = parseInt(container.dataset.monthIndex || '0');
+  if (monthIndex < 0) monthIndex = 0;
+  if (monthIndex >= monthKeys.length) monthIndex = monthKeys.length - 1;
+  container.dataset.monthIndex = monthIndex;
+  
+  const currentMonthKey = monthKeys[monthIndex];
+  
+  // Header with arrows
+  const header = document.createElement('div');
+  header.style.display = 'flex';
+  header.style.justifyContent = 'space-between';
+  header.style.alignItems = 'center';
+  header.style.marginBottom = '0.5rem';
+  header.style.marginTop = '0.5rem';
+  
+  const prevBtn = document.createElement('button');
+  prevBtn.className = 'btn btn-icon';
+  prevBtn.style.padding = '0.2rem';
+  prevBtn.innerHTML = '<i data-lucide="chevron-left" style="width: 1rem; height: 1rem;"></i>';
+  prevBtn.disabled = monthIndex === 0;
+  prevBtn.style.opacity = prevBtn.disabled ? '0.3' : '1';
+  prevBtn.style.cursor = prevBtn.disabled ? 'default' : 'pointer';
+  prevBtn.onclick = () => {
+    container.dataset.monthIndex = monthIndex - 1;
+    renderMiniCalendar(containerId, activeDates);
+    if (window.lucide) window.lucide.createIcons();
+  };
+  
+  const nextBtn = document.createElement('button');
+  nextBtn.className = 'btn btn-icon';
+  nextBtn.style.padding = '0.2rem';
+  nextBtn.innerHTML = '<i data-lucide="chevron-right" style="width: 1rem; height: 1rem;"></i>';
+  nextBtn.disabled = monthIndex === monthKeys.length - 1;
+  nextBtn.style.opacity = nextBtn.disabled ? '0.3' : '1';
+  nextBtn.style.cursor = nextBtn.disabled ? 'default' : 'pointer';
+  nextBtn.onclick = () => {
+    container.dataset.monthIndex = monthIndex + 1;
+    renderMiniCalendar(containerId, activeDates);
+    if (window.lucide) window.lucide.createIcons();
+  };
+  
+  const mLabel = document.createElement('div');
+  mLabel.className = 'mini-cal-month';
+  mLabel.textContent = currentMonthKey;
+  mLabel.style.fontWeight = 'bold';
+  
+  header.appendChild(prevBtn);
+  header.appendChild(mLabel);
+  header.appendChild(nextBtn);
+  container.appendChild(header);
+  
+  const calGrid = document.createElement('div');
+  calGrid.style.display = 'grid';
+  calGrid.style.gridTemplateColumns = 'repeat(7, 1fr)';
+  calGrid.style.gap = '2px';
+  calGrid.style.textAlign = 'center';
+  
+  const daysKo = ['일','월','화','수','목','금','토'];
+  daysKo.forEach(day => {
+    const dayHeader = document.createElement('div');
+    dayHeader.textContent = day;
+    dayHeader.style.fontSize = '0.75rem';
+    dayHeader.style.color = 'var(--text-secondary)';
+    dayHeader.style.padding = '2px 0';
+    calGrid.appendChild(dayHeader);
+  });
+  
+  const firstDate = new Date(datesByMonth[currentMonthKey][0]);
+  const year = firstDate.getFullYear();
+  const monthIdx = firstDate.getMonth();
+  const firstDayIndex = new Date(year, monthIdx, 1).getDay();
+  const totalDays = new Date(year, monthIdx + 1, 0).getDate();
+  
+  const activeDatesSet = new Set(datesByMonth[currentMonthKey]);
+  
+  for (let i = 0; i < firstDayIndex; i++) {
+    calGrid.appendChild(document.createElement('div'));
   }
+  
+  for (let i = 1; i <= totalDays; i++) {
+    const dStr = `${year}-${String(monthIdx + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+    const el = document.createElement('div');
+    el.textContent = i;
+    el.style.padding = '0.4rem 0';
+    el.style.fontSize = '0.85rem';
+    el.style.borderRadius = 'var(--radius-sm)';
+    
+    if (activeDatesSet.has(dStr)) {
+      el.className = 'mini-cal-day active';
+      el.dataset.date = dStr;
+    } else {
+      el.style.color = 'var(--text-disabled, #666)';
+    }
+    calGrid.appendChild(el);
+  }
+  container.appendChild(calGrid);
 }
 
 function renderDatetimeGroupGrid() {
