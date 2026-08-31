@@ -1768,3 +1768,6 @@ input[type="text"]:focus + .input-icon, input[type="password"]:focus + .input-ic
   border-color: #fbbf24;
   box-shadow: 0 0 8px rgba(245, 158, 11, 0.4);
 }
+
+button .lucide { pointer-events: none; }
+
