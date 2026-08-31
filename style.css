@@ -74,11 +74,17 @@
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
 }
+.mobile-only {
+  display: inline-flex;
+}
 
 @media (min-width: 900px) {
   html, body {
     overflow: hidden;
     height: 100vh;
+  }
+  .mobile-only {
+    display: none !important;
   }
 }
 
@@ -1509,20 +1515,35 @@ input[type="text"]:focus + .input-icon, input[type="password"]:focus + .input-ic
    ========================================================================== */
 .datetime-split-layout {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   gap: 1.5rem;
   height: 100%;
   min-width: 0;
 }
+@media (min-width: 900px) {
+  .datetime-split-layout {
+    flex-direction: row;
+  }
+}
 
 .mini-calendar-container {
-  flex: 0 0 200px;
+  flex: none;
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
-  overflow-y: auto;
-  border-right: 1px solid var(--border-color);
-  padding-right: 1rem;
+  overflow-y: hidden;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 1rem;
+}
+@media (min-width: 900px) {
+  .mini-calendar-container {
+    flex: 0 0 200px;
+    border-bottom: none;
+    padding-bottom: 0;
+    border-right: 1px solid var(--border-color);
+    padding-right: 1rem;
+    overflow-y: auto;
+  }
 }
 
 .mini-cal-month {
