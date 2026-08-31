@@ -36,12 +36,13 @@
   <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
-  <div class="page-wrapper">
-    <!-- Background Glows -->
+  <!-- Background Glows -->
+  <div class="glow-container">
     <div class="glow-bg glow-1"></div>
     <div class="glow-bg glow-2"></div>
+  </div>
 
-    <div class="app-container">
+  <div class="app-container">
     <main class="app-main">
       <!-- 1. CREATION VIEW (이벤트 생성 페이지) -->
       <section id="creation-view" class="view-card hidden creation-split">
@@ -324,7 +325,6 @@
   <!-- Toast Notification -->
   <div id="toast" class="toast hidden">URL 복사 완료!</div>
 
-  </div>
   <!-- Scripts -->
   <script src="app.js"></script>
 </body>
