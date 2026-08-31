@@ -123,6 +123,7 @@ body {
   max-width: 1280px;
   margin: 0 auto;
   padding: 0 0.75rem;
+  overflow-x: hidden;
 }
 @media (min-width: 900px) {
   .app-container {
