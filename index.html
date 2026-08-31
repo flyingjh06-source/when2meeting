@@ -132,15 +132,15 @@
           <div id="day-of-week-group" class="hidden" style="height: 100%; display: flex; flex-direction: column;">
             <div class="form-group" style="margin-bottom: 0; display: flex; flex-direction: column; height: 100%;">
               <label style="margin-bottom: 1rem;">요일 선택 <span class="label-desc">(반복되는 요일을 선택해 주세요)</span></label>
-              <div class="calendar-picker-container" style="flex: 1; max-width: none; margin: 0; display: flex; align-items: stretch; padding: 2rem;">
+              <div class="calendar-picker-container dow-picker-container" style="flex: 1; max-width: none; margin: 0; display: flex; align-items: stretch;">
                 <div class="day-of-week-picker" id="day-of-week-picker" style="flex: 1; align-items: stretch; gap: 0.5rem;">
-                  <button type="button" class="dow-btn" data-day="sun">일요일</button>
-                  <button type="button" class="dow-btn" data-day="mon">월요일</button>
-                  <button type="button" class="dow-btn" data-day="tue">화요일</button>
-                  <button type="button" class="dow-btn" data-day="wed">수요일</button>
-                  <button type="button" class="dow-btn" data-day="thu">목요일</button>
-                  <button type="button" class="dow-btn" data-day="fri">금요일</button>
-                  <button type="button" class="dow-btn" data-day="sat">토요일</button>
+                  <button type="button" class="dow-btn" data-day="sun">일</button>
+                  <button type="button" class="dow-btn" data-day="mon">월</button>
+                  <button type="button" class="dow-btn" data-day="tue">화</button>
+                  <button type="button" class="dow-btn" data-day="wed">수</button>
+                  <button type="button" class="dow-btn" data-day="thu">목</button>
+                  <button type="button" class="dow-btn" data-day="fri">금</button>
+                  <button type="button" class="dow-btn" data-day="sat">토</button>
                 </div>
               </div>
             </div>
@@ -236,8 +236,8 @@
               <div class="panel-header" style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1.5rem; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border-color);">
                 
                 <!-- Left: Title and Copy Button -->
-                <div class="event-info" style="flex-shrink: 0; min-width: max-content;">
-                  <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
+                <div class="event-info" style="flex-shrink: 0; min-width: 0;">
+                  <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem; flex-wrap: wrap;">
                     <h1 id="display-event-title" style="margin: 0; font-family: var(--font-header); font-size: 1.75rem;">모임 로딩 중...</h1>
                     <button id="copy-url-btn" class="btn btn-copy" title="링크 복사" style="padding: 0.4rem 0.75rem; font-size: 0.85rem;">
                       <i data-lucide="copy" class="btn-icon"></i>
