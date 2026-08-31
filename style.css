@@ -55,6 +55,10 @@
   margin: 0;
   padding: 0;
 }
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+}
 
 /* Utilities */
 .hide-scrollbar::-webkit-scrollbar {
