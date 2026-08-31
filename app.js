@@ -852,6 +852,37 @@ function renderParticipantList() {
 // EVENT LISTENERS & GENERAL HELPERS
 // -------------------------------------------------------------
 function setupEventListeners() {
+  // Mobile Calendar Toggles
+  const userCalToggle = document.getElementById('mobile-cal-toggle-user');
+  const miniCalUser = document.getElementById('mini-calendar-user');
+  if (userCalToggle && miniCalUser) {
+    if (window.innerWidth < 900) {
+      miniCalUser.classList.add('hidden');
+      userCalToggle.innerHTML = `<i data-lucide="chevron-down" class="btn-icon"></i>`;
+    }
+    userCalToggle.addEventListener('click', () => {
+      miniCalUser.classList.toggle('hidden');
+      const isHidden = miniCalUser.classList.contains('hidden');
+      userCalToggle.innerHTML = `<i data-lucide="${isHidden ? 'chevron-down' : 'chevron-up'}" class="btn-icon"></i>`;
+      if (window.lucide) window.lucide.createIcons();
+    });
+  }
+
+  const groupCalToggle = document.getElementById('mobile-cal-toggle-group');
+  const miniCalGroup = document.getElementById('mini-calendar-group');
+  if (groupCalToggle && miniCalGroup) {
+    if (window.innerWidth < 900) {
+      miniCalGroup.classList.add('hidden');
+      groupCalToggle.innerHTML = `<i data-lucide="chevron-down" class="btn-icon"></i>`;
+    }
+    groupCalToggle.addEventListener('click', () => {
+      miniCalGroup.classList.toggle('hidden');
+      const isHidden = miniCalGroup.classList.contains('hidden');
+      groupCalToggle.innerHTML = `<i data-lucide="${isHidden ? 'chevron-down' : 'chevron-up'}" class="btn-icon"></i>`;
+      if (window.lucide) window.lucide.createIcons();
+    });
+  }
+
   // Global drag stop
   window.addEventListener('mouseup', () => {
     if (isDragging) {
@@ -867,6 +898,7 @@ function setupEventListeners() {
     const target = e.target;
     const cell = target.closest('.calendar-day, .date-slot, .time-slot, .dow-btn');
     if (!cell) return;
+    if (cell.closest('#group-heatmap-grid, #datetime-group-grid')) return;
     if (cell.classList.contains('empty') || cell.classList.contains('not-candidate')) return;
     
     e.preventDefault();
@@ -920,6 +952,7 @@ function setupEventListeners() {
     
     const cell = target.closest('.calendar-day, .date-slot, .time-slot, .dow-btn');
     if (!cell) return;
+    if (cell.closest('#group-heatmap-grid, #datetime-group-grid')) return;
     if (cell.classList.contains('empty') || cell.classList.contains('not-candidate')) return;
     
     const isDowBtn = cell.classList.contains('dow-btn');
