@@ -1124,7 +1124,7 @@ input[type="text"]:focus + .input-icon, input[type="password"]:focus + .input-ic
   flex-direction: column;
   gap: 0.25rem;
   max-height: 120px;
-  overflow-y: auto;
+  overflow: hidden;
   color: var(--text-secondary);
 }
 
