@@ -742,8 +742,9 @@ function showTooltip(cell, dateStr, availableUsers) {
   noList.innerHTML = '';
 
   const availableNames = availableUsers.map(u => u.name);
+  const availableNamesSet = new Set(availableNames);
   const unavailableNames = groupAvailability
-    .filter(avail => !avail.available_dates.includes(dateStr))
+    .filter(u => !availableNamesSet.has(u.name))
     .map(u => u.name);
 
   yesCount.textContent = countYes;
