@@ -1669,9 +1669,6 @@ input[type="text"]:focus + .input-icon, input[type="password"]:focus + .input-ic
     aspect-ratio: unset;
   }
 }
-.app-main {
-  overflow-y: hidden !important;
-}
 
 /* ==========================================================================
    DATETIME GRID STYLES
